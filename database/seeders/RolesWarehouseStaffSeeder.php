@@ -23,31 +23,41 @@ class RolesWarehouseStaffSeeder extends Seeder
             $permissionPurchaseHistory
         ]);
 
-        $user = User::create([
+        $userStaff = User::create([
             'name' => 'Staff',
             'email' => 'staff@gmail.com',
-            'position' => 'warehouse_staff',
+            'position_id' => 5,
+            'branch_id' => 1,
             'email_verified_at' => now(),
             'password' => Hash::make('password'),
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
-        $user = User::create([
-            'name' => 'aku',
-            'email' => 'aku@gmail.com',
-            'position' => 'warehouse_staff',
+        $userStaff2 = User::create([
+            'name' => 'Staff 2',
+            'email' => 'staff2@gmail.com',
+            'position_id' => 5,
+            'branch_id' => 2,
             'email_verified_at' => now(),
             'password' => Hash::make('password'),
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
-        $user->assignRole($roleWarehouseStaff);
-        $user->givePermissionTo([
-            $permissionProduct->name,
-            $permissionSuppliers->name,
-            $permissionPurchaseHistory->name
-        ]);
+
+                $userStaff->assignRole($roleWarehouseStaff);
+                $userStaff->givePermissionTo([
+                    $permissionProduct->name,
+                    $permissionSuppliers->name,
+                    $permissionPurchaseHistory->name
+                ]);
+
+                $userStaff2->assignRole($roleWarehouseStaff);
+                $userStaff2->givePermissionTo([
+                $permissionProduct->name,
+                $permissionSuppliers->name,
+                $permissionPurchaseHistory->name
+                ]);
     }
 }

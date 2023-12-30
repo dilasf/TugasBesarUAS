@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\Branch;
+use App\Models\Position;
 use App\Providers\RouteServiceProvider;
+use Illuminate\Cache\RateLimiter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,7 +20,10 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): View
     {
-        return view('auth.login');
+        $positions = Position::all();
+        $branches = Branch::all();
+        // return view('auth.login');
+        return view('auth.login', compact('positions', 'branches'));
     }
 
     /**
@@ -25,19 +31,26 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        $credentials = $request->only('name', 'password', 'position', 'branch');
+        // $credentials['position'] = $request->input('position');
+
+        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
+            RateLimiter::hit($this->throttleKey());
+
+            return redirect()->route('login')->withErrors([
+                'name' => trans('auth.failed'),
+            ]);
+        }
+
+        $user = Auth::user();
+
 
         $request->session()->regenerate();
 
         $user = Auth::user();
-
         $position = $user->position;
 
-        if ($position === 'warehouse_staff') {
-            return redirect()->route('dashboard');
-        } elseif ($position === 'cashier') {
-            return redirect()->route('dashboard');
-        }elseif ($position === 'supervisor') {
+        if ($position === 'warehouse_staff' || $position === 'cashier' || $position === 'supervisor') {
             return redirect()->route('dashboard');
         }
 

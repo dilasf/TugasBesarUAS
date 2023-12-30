@@ -8,19 +8,22 @@ use App\Models\Supplier;
 use App\Models\Typesofgood;
 use App\Models\Unit;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
+
     public function index()
     {
-        $data['products'] = Product::with('typesofgoods', 'units')->get();
+        $userBranchId = auth()->user()->branch_id;
+        $data['products'] = Product::where('branch_id', $userBranchId)->with('typesofgoods', 'units')->get();
         return view('minimarket.manage_goods.index', $data);
     }
 
     public function edit(string $id)
     {
-        $barang= Product::find($id);
+        $userBranchId = auth()->user()->branch_id;
+        $barang = Product::where('branch_id', $userBranchId)->find($id);
         $units = Unit::pluck('name', 'id');
         $typesofgoods = Typesofgood::pluck('name', 'id');
         $suppliers = Supplier::pluck('supplier_name', 'id');
@@ -33,47 +36,53 @@ class ProductController extends Controller
         ]);
     }
 
+    public function update(Request $request, string $id)
+    {
+        $userBranchId = auth()->user()->branch_id;
+    $data['product'] = Product::where('branch_id', $userBranchId)->find($id);
 
-        public function update(Request $request, string $id)
-        {
+        $validated = $request->validate([
+            'code_product' => 'required|max:10',
+            'product_name' => 'required|max:150',
+            'type_id' => 'required|exists:typesofgoods,id',
+            'unit_id' => 'required|exists:units,id',
+            'brand' => 'required|max:100',
+            'stock' => 'required|integer|min:1',
+            'buying_price' => 'required|numeric|min:0',
+            'selling_price' => 'required|numeric|min:0',
+        ]);
 
-            $data['products'] = Product::find($id);
+        $validated['branch_id'] = $userBranchId;
+        $product = Product::where('branch_id', $userBranchId)->where('id', $id)->update($validated);
 
-            $validated = $request->validate([
-                'code_product' => 'required|max:10',
-                'product_name' => 'required|max:150',
-                'type_id' => 'required|exists:typesofgoods,id',
-                'unit_id' => 'required|exists:units,id',
-                'brand' => 'required|max:100',
-                'stock' => 'required|integer|min:1',
-                'buying_price' => 'required|numeric|min:0',
-                'selling_price' => 'required|numeric|min:0',
-            ]);
-
-            $product = Product::where('id', $id)->update($validated);
-
-            if ($product) {
-                return redirect()->route('minimarket.manage_goods')
-                    ->with('success', 'Product updated successfully.');
-            } else {
-                return redirect()->route('minimarket.manage_goods.edit', $id)
-                    ->with('error', 'Failed to update product. Please try again.');
-            }
+        if ($product) {
+            $notification['alert-type'] = 'success';
+            $notification['message'] = 'Product Successfully Updated';
+            return redirect()->route('minimarket.manage_goods')->with($notification);
+        } else {
+            $notification['alert-type'] = 'error';
+            $notification['message'] = 'Failed to Update Product';
+            return redirect()->route('minimarket.manage_goods.update')->withInput()->with($notification);
         }
+    }
 
-        public function destroy(string $id)
-        {
-            $barang = Product::findOrFail($id);
+    public function destroy(string $id)
+    {
+        $userBranchId = auth()->user()->branch_id;
+        $barang = Product::where('branch_id', $userBranchId)->findOrFail($id);
 
-            PurchaseRecord::where('product_id', $id)->update(['product_id' => null]);
+        PurchaseRecord::where('product_id', $id)->update(['product_id' => null]);
 
-            if ($barang->delete()) {
-                return redirect()->route('minimarket.manage_goods')
-                    ->with('success', 'Product deleted successfully.');
-            } else {
-                return redirect()->route('minimarket.manage_goods')
-                    ->with('error', 'Failed to delete product. Please try again.');
-            }
+        $product = $barang->delete();
+
+        if ($product) {
+            $notification['alert-type'] = 'success';
+            $notification['message'] = 'Product Deleted Successfully';
+            return redirect()->route('minimarket.manage_goods')->with($notification);
+        } else {
+            $notification['alert-type'] = 'error';
+            $notification['message'] = 'Failed to Delete Product';
+            return redirect()->route('minimarket.manage_goods.update')->withInput()->with($notification);
         }
-
+    }
 }

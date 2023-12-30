@@ -28,12 +28,14 @@ class SupplierController extends Controller
 
         $supplier = Supplier::create($validatedData);
 
-        if ( $supplier) {
-            return redirect()->route('minimarket.manage_goods.suppliers')
-                ->with('success', 'Supplier created successfully.');
+        if ($supplier) {
+            $notification['alert-type'] = 'success';
+            $notification['message'] = 'Supplier Created Successfully';
+            return redirect()->route('minimarket.manage_goods.suppliers')->with($notification);
         } else {
-            return redirect()->route('minimarket.manage_transactions.discount.create')
-                ->with('error', 'Failed to create supplier. Please try again.');
+            $notification['alert-type'] = 'error';
+            $notification['message'] = 'Failed to Create Supplier';
+            return redirect()->route('minimarket.manage_goods.suppliers.store')->withInput()->with($notification);
         }
     }
 
@@ -56,27 +58,30 @@ class SupplierController extends Controller
 
         $supplier->update($validatedData);
 
-        if ( $supplier) {
-            return redirect()->route('minimarket.manage_goods.suppliers')
-                ->with('success', 'Supplier updated successfully.');
+        if ($supplier) {
+            $notification['alert-type'] = 'success';
+            $notification['message'] = 'Supplier Successfully Updated';
+            return redirect()->route('minimarket.manage_goods.suppliers')->with($notification);
         } else {
-            return redirect()->route('minimarket.manage_goods.suppliers.edit', $id)
-                ->with('error', 'Failed to update supplier. Please try again.');
+            $notification['alert-type'] = 'error';
+            $notification['message'] = 'Failed to Update Supplier';
+            return redirect()->route('minimarket.manage_goods.suppliers.update')->withInput()->with($notification);
         }
     }
-
 
 
     public function destroy($id)
     {
         $supplier = Supplier::findOrFail($id);
 
-        if ($supplier->delete()) {
-            return redirect()->route('minimarket.manage_goods.suppliers')
-                ->with('success', 'Supplier deleted successfully.');
+        if ($supplier) {
+            $notification['alert-type'] = 'success';
+            $notification['message'] = 'Supplier Deleted Successfully';
+            return redirect()->route('minimarket.manage_goods.suppliers')->with($notification);
         } else {
-            return redirect()->route('minimarket.manage_goods.suppliers')
-                ->with('error', 'Failed to delete supplier. Please try again.');
+            $notification['alert-type'] = 'error';
+            $notification['message'] = 'Failed to Delete Supplier';
+            return redirect()->route('minimarket.manage_goods.suppliers')->withInput()->with($notification);
         }
     }
 }

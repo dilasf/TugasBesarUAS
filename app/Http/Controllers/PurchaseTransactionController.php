@@ -10,6 +10,7 @@ use App\Models\Supplier;
 use App\Models\Typesofgood;
 use App\Models\Unit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PurchaseTransactionController extends Controller
 {
@@ -33,6 +34,7 @@ class PurchaseTransactionController extends Controller
     public function store(Request $request)
 {
     $validated = $request->validate([
+        'branch_id' => 'required|exists:branches,id',
         'code_purchase' => 'required|unique:purchase_transactions,code_purchase',
         'transaction_date' => 'required|date',
         'code_product' => 'required|string',
@@ -49,6 +51,10 @@ class PurchaseTransactionController extends Controller
         'product_id' => 'nullable|exists:products,id',
     ]);
 
+    $user = Auth::user();
+
+    $validated['branch_id'] = $user->branch_id;
+
     $supplier = Supplier::where('supplier_name', $validated['supplier_name'])->first();
 
     if (!$supplier) {
@@ -58,6 +64,7 @@ class PurchaseTransactionController extends Controller
     }
 
     $existingProduct = Product::where([
+        'branch_id' => $validated['branch_id'],
         'code_product' => $validated['code_product'],
         'product_name' => $validated['product_name'],
         'type_id' => $validated['type_id'],
@@ -67,6 +74,7 @@ class PurchaseTransactionController extends Controller
     ])->first();
 
     $purchaseRecord = PurchaseRecord::create([
+        'branch_id' => $validated['branch_id'],
         'code_purchase' => $validated['code_purchase'],
         'code_product' => $validated['code_product'],
         'product_name' => $validated['product_name'],
@@ -83,6 +91,7 @@ class PurchaseTransactionController extends Controller
         $existingProduct->save();
     } else {
         $product = Product::create([
+            'branch_id' => $validated['branch_id'],
             'code_product' => $validated['code_product'],
             'product_name' => $validated['product_name'],
             'brand' => $validated['brand'],

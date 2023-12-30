@@ -10,6 +10,11 @@ class Product extends Model
 {
     use HasFactory;
 
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class);
+    }
+
     public function typesofgoods(): BelongsTo
     {
         return $this->belongsTo(Typesofgood::class, 'type_id', 'id');
@@ -28,6 +33,7 @@ class Product extends Model
 
 
     protected $fillable = [
+        'branch_id',
         'code_purchase',
         'transaction_date',
         'code_product',

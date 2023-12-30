@@ -37,6 +37,7 @@ class PurchaseTransaction extends Model
     }
 
     protected $fillable = [
+        'branch_id',
         'code_purchase',
         'transaction_date',
         'code_product',

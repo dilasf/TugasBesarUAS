@@ -9,24 +9,28 @@ use App\Models\Product;
 use App\Models\SaleRecord;
 use App\Models\SaleTransaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SaleTransactionController extends Controller
 {
+
     public function index()
     {
-        $data['products'] = Product::all();
+        $userBranchId = auth()->user()->branch_id;
+        $data['products'] = Product::where('branch_id', $userBranchId)->with('typesofgoods', 'units')->get();
         return view('minimarket.manage_transactions.index', $data);
     }
 
     public function create()
     {
+        $user = Auth::user();
         $payments = Payment::pluck('name', 'id');
         $paymentstatus = PaymentStatus::pluck('name', 'id');
 
         return view('minimarket.manage_transactions.create', [
             'payments' => $payments,
             'paymentstatus' => $paymentstatus,
-
+            'branch_id' => $user->branch_id,
         ]);
     }
 
@@ -34,6 +38,7 @@ class SaleTransactionController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'branch_id' => 'required|exists:branches,id',
             'code_sale' => 'required|unique:sale_transactions,code_sale',
             'transaction_date' => 'required|date',
             'product_name' => 'required|string',
@@ -49,6 +54,9 @@ class SaleTransactionController extends Controller
             'payment_status_id' => 'required|exists:payment_statuses,id',
             'discount_id' => 'nullable|exists:discounts,id',
         ]);
+
+        $user = Auth::user();
+        $validated['branch_id'] = $user->branch_id;
 
         $product = Product::where('product_name', $validated['product_name'])->first();
 
@@ -81,6 +89,7 @@ class SaleTransactionController extends Controller
             $product->save();
 
             SaleRecord::create([
+                'branch_id' => $validated['branch_id'],
                 'code_sale' => $validated['code_sale'],
                 'transaction_date' => $validated['transaction_date'],
                 'product_name' => $validated['product_name'],

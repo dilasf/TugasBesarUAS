@@ -19,6 +19,7 @@ class PurchaseRecord extends Model
 
 
     protected $fillable = [
+        'branch_id',
         'code_purchase',
         'code_product',
         'product_name',

@@ -6,9 +6,15 @@ use App\Models\SaleRecord;
 
 class SaleRecordController extends Controller
 {
+
     public function index()
     {
-        $data['sale_records'] = SaleRecord::with('product')->get();
+        $userBranchId = auth()->user()->branch_id;
+
+        $data['sale_records'] = SaleRecord::where('branch_id', $userBranchId)
+            ->with('product')
+            ->get();
+
         return view('minimarket.Records.sale', $data);
     }
 }

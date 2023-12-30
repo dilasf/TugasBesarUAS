@@ -20,14 +20,23 @@
             </div>
 
             <!-- Position -->
-            <div>
+            <div class="block mt-4">
                 <x-input-label for="position" :value="__('Select Position')" />
-                <x-select-input id="position" class="block mt-1 w-full" name="position" :value="old('position')" required>
-                    <option value="warehouse_staff">Warehouse Staff</option>
-                    <option value="cashier">Cashier</option>
-                    <option value="supervisor">Supervisor</option>
+                <x-select-input id="position" name="position_id" class="mt-1 block w-full" required>
+                    @foreach($positions as $posisi)
+                        <option value="{{ $posisi->id }}">{{ $posisi->name }}</option>
+                    @endforeach
                 </x-select-input>
-                <x-input-error :messages="$errors->get('position')" class="mt-2" />
+            </div>
+
+            <!-- Cabang -->
+            <div class="block mt-4">
+                <x-input-label for="branch" :value="__('Select Branch')" />
+                <x-select-input id="branch" name="branch_id" class="mt-1 block w-full" required>
+                    @foreach($branches as $cabang)
+                        <option value="{{ $cabang->id }}">{{ $cabang->name }}</option>
+                    @endforeach
+                </x-select-input>
             </div>
 
         <!-- Password -->

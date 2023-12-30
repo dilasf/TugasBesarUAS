@@ -13,6 +13,7 @@
                     <form method="post" action="{{ route('minimarket.manage_transactions.store') }}">
                         @csrf
 
+                        <input type="hidden" name="branch_id" value="{{ $branch_id }}" />
 
                         <div class="mb-4 max-w-xl">
                             <x-input-label for="paymentstatus" value="Metode Pembayaran" />

@@ -12,6 +12,7 @@
 
                     <form method="post" action="{{ route('minimarket.manage_goods.transaction.store') }}">
                         @csrf
+                        <input type="hidden" name="branch_id" value="{{ Auth::user()->branch_id }}">
 
                         <div class="mb-4 max-w-xl">
                             <x-input-label for="transaction_date" value="Tanggal Transaksi" />

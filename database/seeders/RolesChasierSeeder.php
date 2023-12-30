@@ -30,7 +30,19 @@ class RolesChasierSeeder extends Seeder
         $userCashier = User::create([
             'name' => 'Kasir',
             'email' => 'kasir@gmail.com',
-            'position' => 'cashier',
+            'position_id' => 4,
+            'branch_id' => 1,
+            'email_verified_at' => now(),
+            'password' => Hash::make('password'),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $userCashier2 = User::create([
+            'name' => 'Kasir 2',
+            'email' => 'kasir2@gmail.com',
+            'position_id' => 4,
+            'branch_id' => 2,
             'email_verified_at' => now(),
             'password' => Hash::make('password'),
             'created_at' => now(),
@@ -39,6 +51,13 @@ class RolesChasierSeeder extends Seeder
 
         $userCashier->assignRole($roleCashier);
         $userCashier->givePermissionTo([
+            $permissionTransaction->name,
+            $permissionDiscount->name,
+            $permissionDailyReport->name
+        ]);
+
+        $userCashier2->assignRole($roleCashier);
+        $userCashier2->givePermissionTo([
             $permissionTransaction->name,
             $permissionDiscount->name,
             $permissionDailyReport->name

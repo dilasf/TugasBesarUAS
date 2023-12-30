@@ -13,7 +13,9 @@ return new class extends Migration
 {
     Schema::create('target_sales', function (Blueprint $table) {
         $table->id();
+        $table->foreignId('branch_id')->constrained('branches');
         $table->string('manager_name');
+        $table->foreignId('position_id')->constrained('positions');
         $table->string('month_target');
         $table->integer('year_target');
         $table->decimal('target_sales', 10, 2);
