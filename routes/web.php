@@ -1,14 +1,17 @@
 <?php
 
 use App\Http\Controllers\DiscountController;
+use App\Http\Controllers\PenggunaController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PurchaseRecordsController;
 use App\Http\Controllers\PurchaseTransactionController;
+use App\Http\Controllers\ReportPurchaseController;
 use App\Http\Controllers\SaleRecordController;
 use App\Http\Controllers\SaleTransactionController;
 use App\Http\Controllers\SupervisorController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\TransactionHistoryController;
 use App\Http\Controllers\TransactionReportController;
 use Illuminate\Support\Facades\Route;
 
@@ -89,6 +92,9 @@ Route::middleware(['role:Cashier'])->group(function () {
 Route::middleware(['role:Cashier'])->group(function () {
     Route::get('/minimarket/manage_transactions/report', [TransactionReportController::class, 'index'])->name('minimarket.manage_transactions.report');
 });
+// Route::middleware(['role:Cashier'])->group(function () {
+//     Route::get('/minimarket/manage_transactions/report', [ReportPurchaseController::class, 'index'])->name('minimarket.manage_goods.report');
+// });
 
 Route::middleware(['role:Cashier'])->group(function () {
     Route::get('/get-discount/{discountName}', [DiscountController::class, 'getDiscount'])->name('get-discount');
@@ -101,18 +107,22 @@ Route::middleware(['role:Cashier'])->group(function () {
 });
 
 Route::middleware(['role:Supervisor'])->group(function () {
-    Route::get('/Supervisor/supervisor_stock_barang', [SupervisorController::class, 'index'])->name('Supervisor.supervisor_stock_barang');
-    Route::get('/Supervisor/supervisor_stock_barang/barang', [SupervisorController::class, 'create'])->name('Supervisor.supervisor_stock_barang.create');
-    Route::get('/Supervisor/supervisor_riwayat_transaksi', [SupervisorController::class, 'showHistory'])->name('Supervisor.supervisor_riwayat_transaksi.index');
+    Route::get('/minimarket/supervisor/stock', [SupervisorController::class, 'index'])->name('minimarket.supervisor.stock');
+    Route::get('/minimarket/supervisor/stock/create', [SupervisorController::class, 'create'])->name('minimarket.supervisor.stock.create');
+    // Route::get('/minimarket/supervisor/history/index', [SupervisorController::class, 'showHistory'])->name('minimarket.supervisor.history.index');
     // Route::get('/Supervisor/supervisor_riwayat_transaksi', [SupervisorController::class, 'index'])->name('Supervisor.supervisor_riwayat_transaksi');
-
     //Route::get('/Supervisor/supervisor_riwayat_transaksi', [SupervisorController::class, 'create'])->name('Supervisor.supervisor_riwayat_transaksi.create');
 });
 
-// Route::middleware(['role:Supervisor'])->group(function () {
-//     Route::get('/Supervisor/supervisor_riwayat_transaksi', [SaleTransactionController::class, 'index'])->name('Supervisor.supervisor_riwayat_transaksi');
+Route::middleware(['role:Supervisor'])->group(function () {
+    Route::get('/minimarket/supervisor/history/index', [TransactionHistoryController::class, 'index'])->name('minimarket.supervisor.history.index');
 
-// });
+
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('/minimarket/inmployees/index', [PenggunaController::class, 'index'])->name('minimarket.inmployees.index');
+});
 
 
 require __DIR__.'/auth.php';

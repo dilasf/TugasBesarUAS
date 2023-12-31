@@ -61,7 +61,7 @@
 
             @role('Supervisor')
             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                <x-nav-link :href="route('Supervisor.supervisor_stock_barang')" :active="request()->routeIs('Supervisor.supervisor_stock_barang')">
+                <x-nav-link :href="route('minimarket.supervisor.stock')" :active="request()->routeIs('minimarket.supervisor.stock')">
                     {{ __('Stock of goods') }}
                 </x-nav-link>
             </div>
@@ -69,7 +69,7 @@
 
             @role('Supervisor')
             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                <x-nav-link :href="route('Supervisor.supervisor_riwayat_transaksi.index')" :active="request()->routeIs('Supervisor.supervisor_riwayat_transaksi.index')">
+                <x-nav-link :href="route('minimarket.supervisor.history.index')" :active="request()->routeIs('minimarket.supervisor.history')">
                     {{ __('Transaction History') }}
                 </x-nav-link>
             </div>
@@ -95,7 +95,9 @@
                         <x-dropdown-link :href="route('profile.edit')">
                             {{ __('Profile') }}
                         </x-dropdown-link>
-
+                        <x-dropdown-link :href="route('minimarket.inmployees.index')">
+                            {{ __('Inmployees') }}
+                        </x-dropdown-link>
                         @role('Warehouse Staff')
                         <x-dropdown-link :href="route('minimarket.Records.purchase')">
                             {{ __('Purchase History') }}
@@ -113,6 +115,11 @@
                             {{ __('Report Record Transactions') }}
                         </x-dropdown-link>
                         @endrole
+                        {{-- @role('Cashier')
+                        <x-dropdown-link :href="route('minimarket.manage_goods.report')">
+                            {{ __('Report Purchase records') }}
+                        </x-dropdown-link>
+                        @endrole --}}
 
 
                         <!-- Authentication -->
