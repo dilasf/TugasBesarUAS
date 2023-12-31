@@ -102,6 +102,13 @@
                         </x-dropdown-link>
                         @endrole
 
+                        @role('Warehouse Staff')
+                        <x-dropdown-link :href="route('minimarket.manage_goods.report')">
+                            {{ __('Report Record Transactions') }}
+                        </x-dropdown-link>
+                        @endrole
+
+
                         @role('Cashier')
                         <x-dropdown-link :href="route('minimarket.Records.sale')">
                             {{ __('Sale History') }}

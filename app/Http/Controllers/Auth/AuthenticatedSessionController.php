@@ -26,36 +26,38 @@ class AuthenticatedSessionController extends Controller
         return view('auth.login', compact('positions', 'branches'));
     }
 
-    /**
-     * Handle an incoming authentication request.
-     */
-    public function store(LoginRequest $request): RedirectResponse
-    {
-        $credentials = $request->only('name', 'password', 'position', 'branch');
-        // $credentials['position'] = $request->input('position');
+   /**
+ * Handle an incoming authentication request.
+ */
+public function store(LoginRequest $request): RedirectResponse
+{
+    $request->authenticate();
 
-        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
-            RateLimiter::hit($this->throttleKey());
+    $user = Auth::user();
+    $position = $user->position;
+    $branch = $user->branch;
 
-            return redirect()->route('login')->withErrors([
-                'name' => trans('auth.failed'),
-            ]);
-        }
+    $credentials = $request->only('name', 'password', 'position', 'branch');
 
-        $user = Auth::user();
-
-
+    // Check if the user has the correct position and branch
+    if ($position === $credentials['position'] && $branch === $credentials['branch']) {
         $request->session()->regenerate();
-
-        $user = Auth::user();
-        $position = $user->position;
 
         if ($position === 'warehouse_staff' || $position === 'cashier' || $position === 'supervisor') {
             return redirect()->route('dashboard');
         }
-
-        return redirect()->intended(RouteServiceProvider::HOME);
     }
+
+    Auth::logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+    dd(session()->all());
+
+    return redirect()->route('login')->withErrors([
+        'name' => trans('auth.failed'),
+    ]);
+}
+
 
     /**
      * Destroy an authenticated session.
