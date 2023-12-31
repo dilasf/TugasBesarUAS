@@ -6,7 +6,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PurchaseRecordsController;
 use App\Http\Controllers\PurchaseTransactionController;
-use App\Http\Controllers\ReportPurchaseController;
+use App\Http\Controllers\ReportPurchaseTransactionController;
 use App\Http\Controllers\SaleRecordController;
 use App\Http\Controllers\SaleTransactionController;
 use App\Http\Controllers\SupervisorController;
@@ -74,6 +74,12 @@ Route::middleware(['role:Warehouse Staff'])->group(function () {
     Route::get('/minimarket/Records/purchase', [PurchaseRecordsController::class, 'index'])->name('minimarket.Records.purchase');
 });
 
+Route::middleware(['role:Warehouse Staff'])->group(function () {
+    Route::get('/minimarket/manage_goods/report', [ReportPurchaseTransactionController::class, 'index'])
+        ->name('minimarket.manage_goods.report');
+});
+
+
 Route::middleware(['role:Cashier'])->group(function () {
     Route::get('/minimarket/manage_transactions', [SaleTransactionController::class, 'index'])->name('minimarket.manage_transactions');
     Route::get('/minimarket/manage_transactions/create', [SaleTransactionController::class, 'create'])->name('minimarket.manage_transactions.create');
@@ -108,8 +114,8 @@ Route::middleware(['role:Cashier'])->group(function () {
 
 Route::middleware(['role:Supervisor'])->group(function () {
     Route::get('/minimarket/supervisor/stock', [SupervisorController::class, 'index'])->name('minimarket.supervisor.stock');
-    Route::get('/minimarket/supervisor/stock/create', [SupervisorController::class, 'create'])->name('minimarket.supervisor.stock.create');
-    // Route::get('/minimarket/supervisor/history/index', [SupervisorController::class, 'showHistory'])->name('minimarket.supervisor.history.index');
+    Route::get('/Supervisor/supervisor_stock_barang/barang', [SupervisorController::class, 'create'])->name('Supervisor.supervisor_stock_barang.create');
+    Route::get('/Supervisor/supervisor_riwayat_transaksi', [SupervisorController::class, 'showHistory'])->name('Supervisor.supervisor_riwayat_transaksi.index');
     // Route::get('/Supervisor/supervisor_riwayat_transaksi', [SupervisorController::class, 'index'])->name('Supervisor.supervisor_riwayat_transaksi');
     //Route::get('/Supervisor/supervisor_riwayat_transaksi', [SupervisorController::class, 'create'])->name('Supervisor.supervisor_riwayat_transaksi.create');
 });

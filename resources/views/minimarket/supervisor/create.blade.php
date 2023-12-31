@@ -1,9 +1,8 @@
 
-
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Inmployees') }}
+            {{ __('Chasier') }}
         </h2>
     </x-slot>
     <div class="py-12">
@@ -11,24 +10,24 @@
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
 
-                    <form method="post" action="{{ route('minimarket.inmployees.index') }}">
+                    <form method="post" action="{{ route('minimarket.supervisor.stok.create') }}">
                         @csrf
                             <div class="mb-4 max-w-xl">
-                                <x-input-label for="code_barang" value="Code Barang" />
-                                <x-text-input id="code_barang" type="text" name="code_barang" class="mt-1 block w-full" value="{{ old('code_sale') }}" required />
-                                <x-input-error class="mt-2" :messages="$errors->get('code_barang')" />
+                                <x-input-label for="code_sale" value="Kode Penjualan" />
+                                <x-text-input id="code_sale" type="text" name="code_sale" class="mt-1 block w-full" value="{{ old('code_sale') }}" required />
+                                <x-input-error class="mt-2" :messages="$errors->get('code_sale')" />
                             </div>
 
                             <div class="mb-4 max-w-xl">
-                                <x-input-label for="id_product" value="Id Product" />
-                                <x-text-input id="id_product" type="text" name="id_product" class="mt-1 block w-full" required />
-                                <x-input-error class="mt-2" :messages="$errors->get('id_product')" />
+                                <x-input-label for="product_name" value="Nama Produk" />
+                                <x-text-input id="product_name" type="text" name="product_name" class="mt-1 block w-full" required />
+                                <x-input-error class="mt-2" :messages="$errors->get('product_name')" />
                             </div>
 
                             <div class="mb-4 max-w-xl">
-                                <x-input-label for="type_pembayaran" value="Type Pembayaran" />
-                                <x-text-input id="type_pembayaran" type="number" name="type_pembayaran" min="1" class="mt-1 block w-full" required />
-                                <x-input-error class="mt-2" :messages="$errors->get('type_pembayaran')" />
+                                <x-input-label for="quantity" value="Jumlah Barang" />
+                                <x-text-input id="quantity" type="number" name="quantity" min="1" class="mt-1 block w-full" required />
+                                <x-input-error class="mt-2" :messages="$errors->get('quantity')" />
                             </div>
 
             <script>

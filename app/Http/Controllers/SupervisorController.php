@@ -12,8 +12,7 @@ use Illuminate\Support\Facades\Auth;
 class SupervisorController extends Controller {
     public function index()
     {
-        $userBranchId = auth()->user()->branch_id;
-        $data['products'] = Product::where('branch_id', $userBranchId)->with('typesofgoods', 'units')->get();
+        $data['products'] = Product::all();
         return view('minimarket.supervisor.stock.index', $data);
     }
 
@@ -36,12 +35,12 @@ class SupervisorController extends Controller {
         // Mendapatkan bulan dan tahun yang dipilih dari request
         $selectedMonth = $request->input('selectedMonth');
         $selectedYear = $request->input('selectedYear');
-    
+
         // Lakukan filter terhadap data transaksi berdasarkan bulan dan tahun yang dipilih
         $purchase_records = SaleTransaction::whereMonth('transaction_date', $selectedMonth)
             ->whereYear('transaction_date', $selectedYear)
             ->get();
-    
+
         // Kirim data ke view riwayat transaksi yang telah difilter
         return view('minimarket.supervisor.history', ['purchase_records' => $purchase_records]);
 
@@ -64,4 +63,14 @@ class SupervisorController extends Controller {
         ]);
     }
 
+    // public function __construct()
+    // {
+    //     $this->middleware(function ($request, $next) {
+    //         if (!Auth::user()->hasRole('supervisor')) {
+    //             abort(403, 'Unauthorized action.');
+    //         }
+
+    //         return $next($request);
+    //     });
+    // }
 }
