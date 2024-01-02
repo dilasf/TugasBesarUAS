@@ -26,6 +26,7 @@ class SupervisorSeeder extends Seeder
         $supervisor = User::create([
             'name' => 'Supervisor',
             'email' => 'supervisor@gmail.com',
+            // 'position_name'=> 'Supervisor',
             'position_id' => 3,
             'branch_id' => 1,
             'email_verified_at' => now(),

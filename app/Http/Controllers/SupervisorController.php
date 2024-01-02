@@ -32,16 +32,13 @@ class SupervisorController extends Controller {
 
     public function showHistory(Request $request)
     {
-        // Mendapatkan bulan dan tahun yang dipilih dari request
         $selectedMonth = $request->input('selectedMonth');
         $selectedYear = $request->input('selectedYear');
 
-        // Lakukan filter terhadap data transaksi berdasarkan bulan dan tahun yang dipilih
         $purchase_records = SaleTransaction::whereMonth('transaction_date', $selectedMonth)
             ->whereYear('transaction_date', $selectedYear)
             ->get();
 
-        // Kirim data ke view riwayat transaksi yang telah difilter
         return view('minimarket.supervisor.history', ['purchase_records' => $purchase_records]);
 
         $validated = $request->validate([

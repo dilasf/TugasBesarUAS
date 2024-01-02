@@ -15,12 +15,15 @@ return new class extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->string('email')->unique();
-            $table->foreignId('position_id')->constrained('positions');
+            // $table->string('position_name');
+            $table->unsignedBigInteger('position_id');
             $table->foreignId('branch_id')->constrained('branches');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+
+            $table->foreign('position_id')->references('id')->on('positions');
         });
     }
 

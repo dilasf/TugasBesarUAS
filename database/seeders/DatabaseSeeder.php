@@ -23,9 +23,9 @@ class DatabaseSeeder extends Seeder
             PaymentSeeder::class,
             PaymentStatusSeeder::class,
             ProductSeeder::class,
+            SupervisorSeeder::class,
             RolesChasierSeeder ::class,
             RolesWarehouseStaffSeeder::class,
-            SupervisorSeeder::class,
         ]);
     }
 }

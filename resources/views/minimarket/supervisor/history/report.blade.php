@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Laporan Transaksi Pembelian') }}
+            {{ __('Laporan Transaksi') }}
         </h2>
     </x-slot>
 
@@ -32,6 +32,12 @@
                                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">{{ $report->totalRevenue }}</td>
                                             </tr>
                                             @endforeach
+                                            <tr>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200"></td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">Total Transactions</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200"> {{ $totalTransactions }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">Total Revenue: {{ $totalRevenue }}</td>
+                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>
