@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\DiscountController;
+use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\HistoryPurchaseTransactionController;
 use App\Http\Controllers\PenggunaController;
 use App\Http\Controllers\ProductController;
@@ -10,8 +12,10 @@ use App\Http\Controllers\PurchaseTransactionController;
 use App\Http\Controllers\ReportPurchaseTransactionController;
 use App\Http\Controllers\SaleRecordController;
 use App\Http\Controllers\SaleTransactionController;
+use App\Http\Controllers\StockController;
 use App\Http\Controllers\SupervisorController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\TargetController;
 use App\Http\Controllers\TransactionHistoryController;
 use App\Http\Controllers\TransactionReportController;
 use Illuminate\Support\Facades\Route;
@@ -118,8 +122,31 @@ Route::middleware(['role:Supervisor'])->group(function () {
 
 Route::middleware(['role:Supervisor'])->group(function () {
     Route::get('/minimarket/supervisor/history/index', [TransactionHistoryController::class, 'index'])->name('minimarket.supervisor.history.index');
+});
 
 
+Route::middleware(['role:Manager'])->group(function () {
+    Route::get('/minimarket/manager/stock', [StockController::class, 'index'])->name('minimarket.manager.stock');
+});
+
+Route::middleware(['role:Manager'])->group(function () {
+    Route::get('/minimarket/manager/history/index', [HistoryController::class, 'index'])->name('minimarket.manager.history.index');
+});
+
+Route::middleware(['role:Manager'])->group(function () {
+    Route::get('/minimarket/manager/target', [TargetController::class, 'index'])->name('minimarket.manager.target');
+    Route::get('/minimarket/manager/target/create', [TargetController::class, 'create'])->name('minimarket.manager.target.create');
+    Route::post('/minimarket/manager/target', [TargetController::class, 'store'])->name('minimarket.manager.target.store');
+    Route::get('/minimarket/manager/target/{id}/edit', [TargetController::class, 'edit'])->name('minimarket.manager.target.edit');
+    Route::match(['put', 'patch'],'/minimarket/manager/target/{id}', [TargetController::class, 'update'])->name('minimarket.manager.target.update');
+    Route::delete('/minimarket/manager/target/{id}', [TargetController::class, 'destroy'])->name('minimarket.manager.target.destroy');
+});
+
+Route::middleware(['role:Manager'])->group(function () {
+    Route::get('/minimarket/manager/feedback', [FeedbackController::class, 'index'])->name('minimarket.manager.feedback');
+    Route::get('/minimarket/manager/feedback/create', [FeedbackController::class, 'create'])->name('minimarket.manager.feedback.create');
+    Route::post('/minimarket/manager/feedback', [FeedbackController::class, 'store'])->name('minimarket.manager.feedback.store');
+    Route::delete('/minimarket/manager/feedback/{id}', [FeedbackController::class, 'destroy'])->name('minimarket.manager.feedback.destroy');
 });
 Route::middleware(['role:Supervisor'])->group(function () {
     Route::get('/minimarket/supervisor/history/report', [HistoryPurchaseTransactionController::class, 'index'])->name('minimarket.supervisor.history.report');

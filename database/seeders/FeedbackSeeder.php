@@ -2,11 +2,13 @@
 
 namespace Database\Seeders;
 
-use App\Models\TargetSales;
+use App\Models\Branch;
+use App\Models\Feedback;
+use App\Models\Position;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class TargetSalesSeeder extends Seeder
+class FeedbackSeeder extends Seeder
 {
     /**
      * Run the database seeds.
