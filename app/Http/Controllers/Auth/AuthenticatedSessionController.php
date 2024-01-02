@@ -43,7 +43,7 @@ public function store(LoginRequest $request): RedirectResponse
     if ($position === $credentials['position'] && $branch === $credentials['branch']) {
         $request->session()->regenerate();
 
-        if ($position === 'warehouse_staff' || $position === 'cashier' || $position === 'supervisor') {
+        if ($position === 'warehouse_staff' || $position === 'cashier' || $position === 'supervisor' || $position === 'manager') {
             return redirect()->route('dashboard');
         }
     }

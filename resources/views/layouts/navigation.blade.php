@@ -25,17 +25,17 @@
                         {{ __('Product') }}
                     </x-nav-link>
                 </div>
-                @endrole
+            @endrole
 
-                @role('Warehouse Staff')
+            @role('Warehouse Staff')
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('minimarket.manage_goods.suppliers')" :active="request()->routeIs('minimarket.manage_goods.suppliers')">
                         {{ __('Suppliers') }}
                     </x-nav-link>
                 </div>
-                @endrole
+            @endrole
 
-                @role('Cashier')
+            @role('Cashier')
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                 <x-nav-link :href="route('minimarket.manage_transactions')" :active="request()->routeIs('minimarket.manage_transactions')">
                     {{ __('Product') }}
@@ -43,13 +43,13 @@
             </div>
             @endrole
 
-                @role('Cashier')
+            @role('Cashier')
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('minimarket.manage_transactions.create')" :active="request()->routeIs('minimarket.manage_transactions.create')">
                         {{ __('Transaction') }}
                     </x-nav-link>
                 </div>
-                @endrole
+            @endrole
 
             @role('Cashier')
             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
@@ -71,6 +71,38 @@
             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                 <x-nav-link :href="route('minimarket.supervisor.history.index')" :active="request()->routeIs('minimarket.supervisor.history')">
                     {{ __('Transaction History') }}
+                </x-nav-link>
+            </div>
+            @endrole
+            
+            @role('Manager')
+            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                <x-nav-link :href="route('minimarket.manager.history.index')" :active="request()->routeIs('minimarket.manager.history')">
+                    {{ __('Transaction History') }}
+                </x-nav-link>
+            </div>
+            @endrole
+
+            @role('Manager')
+            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                <x-nav-link :href="route('minimarket.manager.stock')" :active="request()->routeIs('minimarket.manager.stock')">
+                    {{ __('Stock of goods') }}
+                </x-nav-link>
+            </div>
+            @endrole
+
+            @role('Manager')
+            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                <x-nav-link :href="route('minimarket.manager.target')" :active="request()->routeIs('minimarket.manager.target')">
+                    {{ __('Sales Targets') }}
+                </x-nav-link>
+            </div>
+            @endrole
+
+            @role('Manager')
+            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                <x-nav-link :href="route('minimarket.manager.feedback')" :active="request()->routeIs('minimarket.manager.feedback')">
+                    {{ __('Feedback') }}
                 </x-nav-link>
             </div>
             @endrole
@@ -127,6 +159,8 @@
                             {{ __('Report Purchase records') }}
                         </x-dropdown-link>
                         @endrole --}}
+
+                        
 
 
                         <!-- Authentication -->
