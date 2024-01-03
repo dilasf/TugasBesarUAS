@@ -52,57 +52,98 @@
             @endrole
 
             @role('Cashier')
-            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                <x-nav-link :href="route('minimarket.manage_transactions.discount')" :active="request()->routeIs('minimarket.manage_transactions.discount')">
-                    {{ __('Discount') }}
-                </x-nav-link>
-            </div>
-            @endrole
 
-            @role('Supervisor')
-            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                <x-nav-link :href="route('minimarket.supervisor.stock.index')" :active="request()->routeIs('minimarket.supervisor.stock.index')">
-                    {{ __('Stock of goods') }}
-                </x-nav-link>
-            </div>
-            @endrole
+    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
 
-            @role('Supervisor')
-            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                <x-nav-link :href="route('minimarket.supervisor.history.index')" :active="request()->routeIs('minimarket.supervisor.history.index')">
-                    {{ __('Sales Transaction History') }}
-                </x-nav-link>
-            </div>
-            @endrole
-            @role('Supervisor')
-            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                <x-nav-link :href="route('minimarket.supervisor.history.report')" :active="request()->routeIs('minimarket.supervisor.history.report')">
-                    {{ __('Report purchase transactions') }}
-                </x-nav-link>
-            </div>
-            @endrole
-            @role('Supervisor')
-            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                <x-nav-link :href="route('minimarket.enmployees.index')" :active="request()->routeIs('minimarket.enmployees.index')">
-                    {{ __('Enmployees') }}
-                </x-nav-link>
-            </div>
-            @endrole
-            @role('Supervisor')
-            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                <x-nav-link :href="route('minimarket.enmployees.karyawan.create')" :active="request()->routeIs('minimarket.enmployees.karyawan.create')">
-                    {{ __('Added Employees') }}
-                </x-nav-link>
-            </div>
-            @endrole
-            
-            @role('Manager')
-            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                <x-nav-link :href="route('minimarket.manager.history.index')" :active="request()->routeIs('minimarket.manager.history')">
-                    {{ __('Transaction History') }}
-                </x-nav-link>
-            </div>
-            @endrole
+        <x-nav-link :href="route('minimarket.manage_transactions.discount')" :active="request()->routeIs('minimarket.manage_transactions.discount')">
+            {{ __('Discount') }}
+        </x-nav-link>
+
+    </div>
+
+@endrole
+
+<div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+    <x-nav-link :href="route('minimarket.Owner.index')" :active="request()->routeIs('minimarket.Owner.index')">
+        {{ __('Manajemen Pengguna') }}
+    </x-nav-link>
+
+</div>
+<div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+    <x-nav-link :href="route('minimarket.Penjualan.index')" :active="request()->routeIs('minimarket.Penjualan.index')">
+        {{ __('Penjualan') }}
+    </x-nav-link>
+
+</div>
+
+@role('Supervisor')
+
+    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+
+        <x-nav-link :href="route('minimarket.supervisor.stock.index')" :active="request()->routeIs('minimarket.supervisor.stock.index')">
+            {{ __('Stock of goods') }}
+        </x-nav-link>
+
+    </div>
+
+@endrole
+
+@role('Supervisor')
+
+    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+        <!-- Isi dari tautan navigasi untuk Supervisor -->
+        <x-nav-link :href="route('minimarket.supervisor.history.index')" :active="request()->routeIs('minimarket.supervisor.history.index')">
+            {{ __('Sales Transaction History') }}
+        </x-nav-link>
+    </div>
+
+@endrole
+
+@role('Supervisor')
+    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+        <x-nav-link :href="route('minimarket.supervisor.history.report')" :active="request()->routeIs('minimarket.supervisor.history.report')">
+            {{ __('Report purchase transactions') }}
+        </x-nav-link>
+    </div>
+@endrole
+
+@role('Supervisor')
+    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+        <x-nav-link :href="route('minimarket.enmployees.index')" :active="request()->routeIs('minimarket.enmployees.index')">
+            {{ __('Employees') }}
+        </x-nav-link>
+    </div>
+@endrole
+
+@role('Supervisor')
+
+    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+        <x-nav-link :href="route('minimarket.enmployees.karyawan.create')" :active="request()->routeIs('minimarket.enmployees.karyawan.create')">
+            {{ __('Added Employees') }}
+        </x-nav-link>
+    </div>
+
+@endrole
+
+@role('Manager')
+
+    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+        <x-nav-link :href="route('minimarket.manager.history.index')" :active="request()->routeIs('minimarket.manager.history')">
+            {{ __('Transaction History') }}
+        </x-nav-link>
+    </div>
+
+@endrole
+
+@role('Owner')
+
+    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+        <x-nav-link :href="route('minimarket.manager.history.index')" :active="request()->routeIs('minimarket.manager.history')">
+            {{ __('Transaction History') }}
+        </x-nav-link>
+    </div>
+
+@endrole
 
             @role('Manager')
             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
@@ -124,6 +165,14 @@
             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                 <x-nav-link :href="route('minimarket.manager.feedback')" :active="request()->routeIs('minimarket.manager.feedback')">
                     {{ __('Feedback') }}
+                </x-nav-link>
+            </div>
+            @endrole
+
+            @role('Owner')
+            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                <x-nav-link :href="route('minimarket.manager.target')" :active="request()->routeIs('minimarket.manager.target')">
+                    {{ __('Sales Targets') }}
                 </x-nav-link>
             </div>
             @endrole
