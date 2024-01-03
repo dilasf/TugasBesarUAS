@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
             RolesChasierSeeder ::class,
             RolesWarehouseStaffSeeder::class,
             RolesManagerSeeder::class,
+            RoleOwnerSeeder::class,
         ]);
     }
 }

@@ -41,6 +41,8 @@ public function store(LoginRequest $request): RedirectResponse
 
     // Check if the user has the correct position and branch
     if ($position === $credentials['position'] && $branch === $credentials['branch']) {
+        // Code to be executed if the condition is true
+        
         $request->session()->regenerate();
 
         if ($position === 'warehouse_staff' || $position === 'cashier' || $position === 'supervisor' || $position === 'manager') {

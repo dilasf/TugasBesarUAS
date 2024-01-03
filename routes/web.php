@@ -99,6 +99,16 @@ Route::middleware(['role:Cashier'])->group(function () {
 Route::middleware(['role:Cashier'])->group(function () {
     Route::get('/minimarket/Records/sale', [SaleRecordController::class, 'index'])->name('minimarket.Records.sale');
 });
+Route::middleware(['role:Cashier'])->group(function () {
+    Route::get('/minimarket/Owner/index', [PenggunaController::class, 'index'])->name('minimarket.Owner.index');
+});
+Route::middleware(['role:Cashier'])->group(function () {
+    Route::get('/minimarket/Penjualan/index', [PenjualanController::class, 'index'])->name('minimarket.Penjualan.index');
+});
+
+Route::middleware(['role:Owner'])->group(function () {
+    Route::get('/minimarket/manager/history/index', [HistoryController::class, 'index'])->name('minimarket.manager.history.index');
+});
 
 Route::middleware(['role:Cashier'])->group(function () {
     Route::get('/minimarket/manage_transactions/report', [TransactionReportController::class, 'index'])->name('minimarket.manage_transactions.report');
@@ -133,6 +143,15 @@ Route::middleware(['role:Manager'])->group(function () {
     Route::get('/minimarket/manager/history/index', [HistoryController::class, 'index'])->name('minimarket.manager.history.index');
 });
 
+Route::middleware(['role:Owner'])->group(function () {
+    Route::get('/minimarket/manager/target', [TargetController::class, 'index'])->name('minimarket.manager.target');
+    Route::get('/minimarket/manager/target/create', [TargetController::class, 'create'])->name('minimarket.manager.target.create');
+    Route::post('/minimarket/manager/target', [TargetController::class, 'store'])->name('minimarket.manager.target.store');
+    Route::get('/minimarket/manager/target/{id}/edit', [TargetController::class, 'edit'])->name('minimarket.manager.target.edit');
+    Route::match(['put', 'patch'],'/minimarket/manager/target/{id}', [TargetController::class, 'update'])->name('minimarket.manager.target.update');
+    Route::delete('/minimarket/manager/target/{id}', [TargetController::class, 'destroy'])->name('minimarket.manager.target.destroy');
+});
+
 Route::middleware(['role:Manager'])->group(function () {
     Route::get('/minimarket/manager/target', [TargetController::class, 'index'])->name('minimarket.manager.target');
     Route::get('/minimarket/manager/target/create', [TargetController::class, 'create'])->name('minimarket.manager.target.create');
@@ -162,9 +181,9 @@ Route::middleware(['role:Supervisor'])->group(function () {
 
 });
 Route::middleware(['role:Supervisor'])->group(function () {
-    Route::get('/minimarket/enmployees/karyawan', [PenggunaController::class, 'index'])->name('minimarket.enmployees.karyawan');
-    Route::get('/minimarket/enmployees/karyawan/create', [PenggunaController::class, 'create'])->name('minimarket.enmployees.karyawan.create');
-    Route::post('/minimarket/enmployees/karyawan', [PenggunaController::class, 'store'])->name('minimarket.enmployees.karyawan.store');
+    Route::get('/minimarket/enmployees/karyawan', [PenjualanController::class, 'index'])->name('minimarket.enmployees.karyawan');
+    Route::get('/minimarket/enmployees/karyawan/create', [PenjualanController::class, 'create'])->name('minimarket.enmployees.karyawan.create');
+    Route::post('/minimarket/enmployees/karyawan', [PenjualanController::class, 'store'])->name('minimarket.enmployees.karyawan.store');
 
 });
 
