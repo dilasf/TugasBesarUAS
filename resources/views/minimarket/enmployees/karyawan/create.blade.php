@@ -18,16 +18,7 @@
                             <x-text-input id="name" type="text" name="name" class="mt-1 block w-full" required />
                             <x-input-error class="mt-2" :messages="$errors->get('name')" />
                         </div>
-
-                        {{-- <div class="block mb-4 max-w-xl">
-                            <x-input-label for="position" :value="__('Select Position')" />
-                            <x-select-input id="position" name="position_name" class="mt-2 block w-full" required>
-                                @foreach($positions as $posisi)
-                                    <option value="{{ $posisi->name }}">{{ $posisi->name }}</option>
-                                @endforeach
-                            </x-select-input>
-                        </div> --}}
-
+                        
                         <div class="max-w-xl">
                             <x-input-label for="Position" value="Pilih Posisi" />
                             <x-select-input id="Position" name="position_id" class="mt-1 block w-full" required>
