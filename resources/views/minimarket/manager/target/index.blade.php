@@ -21,8 +21,6 @@
                                       <thead>
                                           <tr>
                                               <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">#</th>
-                                              <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Manager Name</th>
-                                              <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Position ID</th>
                                               <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Month</th>
                                               <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Sales Targets</th>
                                               <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Actual Sales</th>
@@ -32,11 +30,9 @@
                                       </thead>
                                       <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                                           @php $num=1; @endphp
-                                          @foreach($targets as $target)
+                                          @foreach($targetSales as $target)
                                               <tr>
                                                   <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">{{ $num++ }}</td>
-                                                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">{{ $target->manager_name }}</td>
-                                                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">{{ $target->position_id }}</td>
                                                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">{{ $target->bulan }}</td>
                                                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">{{ $target->target_penjualan }}</td>
                                                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">{{ $target->penjualan_aktual }}</td>
@@ -84,6 +80,7 @@
                       </form>
                   </x-modal>
                   <!-- End OF Content -->
+
               </div>
           </div>
       </div>

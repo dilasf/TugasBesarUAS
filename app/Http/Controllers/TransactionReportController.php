@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MonthlySalesReport;
 use App\Models\SaleTransaction;
 use Illuminate\Support\Facades\Auth;
 

@@ -13,6 +13,9 @@
 
                     <form action="{{ route('minimarket.manager.target.store') }}" method="POST">
                         @csrf
+                        <input type="hidden" name="branch_id" value="{{ Auth::user()->branch_id }}">
+                        <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
+
                         <div class="max-w-xl">
                             <x-input-label for="bulan" value="Bulan" />
                             <x-text-input id="bulan" type="text" name="bulan" class="mt-1 block w-full" value="{{ old('bulan') }}" required />
@@ -29,14 +32,13 @@
 
                         <div class="max-w-xl">
                             <x-input-label for="penjualan_aktual" value="Penjualan Aktual" />
-                            <x-text-input id="penjualan_aktual" type="number" name="penjualan_aktual" class="mt-1 block w-full" value="{{ old('penjualan_aktual') }}" required />
-                            <x-input-error class="mt-2" :messages="$errors->get('penjualan_aktual')" />
+                            <x-text-input id="penjualan_aktual" type="text" class="mt-1 block w-full" value="{{ old('penjualan_aktual') }}" readonly />
                         </div>
                         <br>
 
                         <div class="max-w-xl">
                             <x-input-label for="selisih" value="Selisih" />
-                            <x-text-input id="selisih" type="number" name="selisih" class="mt-1 block w-full" value="{{ old('selisih') }}" required />
+                            <x-text-input id="selisih" type="number" name="selisih" class="mt-1 block w-full" value="{{ old('selisih') }}" readonly />
                             <x-input-error class="mt-2" :messages="$errors->get('selisih')" />
                         </div>
                         <br>

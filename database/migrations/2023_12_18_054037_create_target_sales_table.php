@@ -14,8 +14,7 @@ return new class extends Migration
     Schema::create('target_sales', function (Blueprint $table) {
         $table->id();
         $table->foreignId('branch_id')->constrained('branches');
-        $table->string('manager_name');
-        $table->foreignId('position_id')->constrained('positions');
+        $table->foreignId('user_id')->constrained('users');
         $table->string('bulan');
         $table->decimal('target_penjualan', 10, 2);
         $table->decimal('penjualan_aktual', 10, 2);

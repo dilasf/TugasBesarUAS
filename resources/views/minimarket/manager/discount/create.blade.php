@@ -10,7 +10,7 @@
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
 
-                    <form action="{{ route('minimarket.manage_transactions.discount.store') }}" method="POST">
+                    <form action="{{ route('minimarket.manager.discount.store') }}" method="POST">
                         @csrf
 
                         <div class="max-w-xl">
@@ -43,7 +43,7 @@
 
                         <x-primary-button name="save" value="true">Create Discount</x-primary-button>
                         {{-- <x-primary-button name="saveandanother" value="true">Create & Another</x-primary-button> --}}
-                        <x-secondary-button tag="a" href="{{ route('minimarket.manage_transactions.discount') }}">Cancel</x-secondary-button>
+                        <x-secondary-button tag="a" href="{{ route('minimarket.manager.discount') }}">Cancel</x-secondary-button>
                     </form>
 
                 </div>

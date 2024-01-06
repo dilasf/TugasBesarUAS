@@ -31,6 +31,16 @@ class Product extends Model
         return $this->hasMany(PurchaseRecord::class);
     }
 
+    public function purchaseTransactions()
+    {
+        return $this->hasMany(PurchaseTransaction::class, 'product_id', 'id');
+    }
+
+    public function saleTransactions()
+    {
+        return $this->hasMany(SaleTransaction::class, 'product_id', 'id');
+    }
+
 
     protected $fillable = [
         'branch_id',

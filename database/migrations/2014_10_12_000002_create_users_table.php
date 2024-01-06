@@ -17,10 +17,11 @@ return new class extends Migration
             $table->string('email')->unique();
             // $table->string('position_name');
             $table->unsignedBigInteger('position_id');
-            $table->foreignId('branch_id')->constrained('branches');
+            $table->foreignId('branch_id')->nullable()->constrained('branches');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
+            $table->text('feedback')->nullable();
             $table->timestamps();
 
             $table->foreign('position_id')->references('id')->on('positions');

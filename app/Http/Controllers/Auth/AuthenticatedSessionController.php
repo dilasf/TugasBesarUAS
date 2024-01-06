@@ -7,11 +7,11 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Models\Branch;
 use App\Models\Position;
 use App\Providers\RouteServiceProvider;
-use Illuminate\Cache\RateLimiter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\DB;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -26,40 +26,34 @@ class AuthenticatedSessionController extends Controller
         return view('auth.login', compact('positions', 'branches'));
     }
 
-   /**
- * Handle an incoming authentication request.
- */
-public function store(LoginRequest $request): RedirectResponse
-{
-    $request->authenticate();
+    /**
+     * Handle an incoming authentication request.
+     */
+    public function store(LoginRequest $request): RedirectResponse
+    {
+        $credentials = $request->only('name', 'password', 'position', 'branch');
 
-    $user = Auth::user();
-    $position = $user->position;
-    $branch = $user->branch;
+        if (!Auth::attempt($credentials, $request->boolean('remember'))) {
+            return redirect()->route('login')->withErrors([
+                'name' => trans('auth.failed'),
+            ]);
+        }
 
-    $credentials = $request->only('name', 'password', 'position', 'branch');
+        $user = Auth::user();
 
-    // Check if the user has the correct position and branch
-    if ($position === $credentials['position'] && $branch === $credentials['branch']) {
-        // Code to be executed if the condition is true
-        
+        // Gunakan Query Builder untuk menyimpan waktu login terakhir
+        DB::table('users')->where('id', $user->id)->update(['last_login_at' => now()]);
+
         $request->session()->regenerate();
 
-        if ($position === 'warehouse_staff' || $position === 'cashier' || $position === 'supervisor' || $position === 'manager') {
+        $position = $user->position;
+
+        if ($position === 'warehouse_staff' || $position === 'cashier' || $position === 'supervisor'|| $position === 'manager'|| $position === 'owner') {
             return redirect()->route('dashboard');
         }
+
+        return redirect()->intended(RouteServiceProvider::HOME);
     }
-
-    Auth::logout();
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
-    dd(session()->all());
-
-    return redirect()->route('login')->withErrors([
-        'name' => trans('auth.failed'),
-    ]);
-}
-
 
     /**
      * Destroy an authenticated session.

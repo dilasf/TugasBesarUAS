@@ -8,4 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Position extends Model
 {
     use HasFactory;
+
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
+
+    protected $fillable = [
+        'name',
+        'id',
+    ];
 }

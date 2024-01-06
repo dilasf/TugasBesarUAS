@@ -10,12 +10,12 @@ class SupplierController extends Controller
     public function index()
     {
         $data['suppliers'] = Supplier::all();
-        return view('minimarket.manage_goods.suppliers.index', $data);
+        return view('minimarket.manager.suppliers.index', $data);
     }
 
     public function create()
     {
-        return view('minimarket.manage_goods.suppliers.create');
+        return view('minimarket.manager.suppliers.create');
     }
 
     public function store(Request $request)
@@ -31,11 +31,11 @@ class SupplierController extends Controller
         if ($supplier) {
             $notification['alert-type'] = 'success';
             $notification['message'] = 'Supplier Created Successfully';
-            return redirect()->route('minimarket.manage_goods.suppliers')->with($notification);
+            return redirect()->route('minimarket.manager.suppliers')->with($notification);
         } else {
             $notification['alert-type'] = 'error';
             $notification['message'] = 'Failed to Create Supplier';
-            return redirect()->route('minimarket.manage_goods.suppliers.store')->withInput()->with($notification);
+            return redirect()->route('minimarket.manager.suppliers.store')->withInput()->with($notification);
         }
     }
 
@@ -43,7 +43,7 @@ class SupplierController extends Controller
     {
         $supplier = Supplier::findOrFail($id);
 
-        return view('minimarket.manage_goods.suppliers.edit', compact('supplier'));
+        return view('minimarket.manager.suppliers.edit', compact('supplier'));
     }
 
     public function update(Request $request, $id)
@@ -61,11 +61,11 @@ class SupplierController extends Controller
         if ($supplier) {
             $notification['alert-type'] = 'success';
             $notification['message'] = 'Supplier Successfully Updated';
-            return redirect()->route('minimarket.manage_goods.suppliers')->with($notification);
+            return redirect()->route('minimarket.manager.suppliers')->with($notification);
         } else {
             $notification['alert-type'] = 'error';
             $notification['message'] = 'Failed to Update Supplier';
-            return redirect()->route('minimarket.manage_goods.suppliers.update')->withInput()->with($notification);
+            return redirect()->route('minimarket.manager.suppliers.update')->withInput()->with($notification);
         }
     }
 
@@ -77,11 +77,18 @@ class SupplierController extends Controller
         if ($supplier) {
             $notification['alert-type'] = 'success';
             $notification['message'] = 'Supplier Deleted Successfully';
-            return redirect()->route('minimarket.manage_goods.suppliers')->with($notification);
+            return redirect()->route('minimarket.manager.suppliers')->with($notification);
         } else {
             $notification['alert-type'] = 'error';
             $notification['message'] = 'Failed to Delete Supplier';
-            return redirect()->route('minimarket.manage_goods.suppliers')->withInput()->with($notification);
+            return redirect()->route('minimarket.manager.suppliers')->withInput()->with($notification);
         }
+    }
+
+
+    public function display()
+    {
+        $data['suppliers'] = Supplier::all();
+        return view('minimarket.manage_goods.suppliers.index', $data);
     }
 }

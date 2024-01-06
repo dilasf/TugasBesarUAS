@@ -37,9 +37,10 @@ class SaleTransactionController extends Controller
 
     public function store(Request $request)
     {
+        $user = Auth::user();
         $validated = $request->validate([
             'branch_id' => 'required|exists:branches,id',
-            'code_sale' => 'required|unique:sale_transactions,code_sale',
+            'code_sale' => 'required|unique:sale_transactions,code_sale','code_sale,NULL,id,branch_id,' . $request->input('branch_id'),
             'transaction_date' => 'required|date',
             'product_name' => 'required|string',
             'sale_price' => 'required|numeric|min:0',
@@ -58,19 +59,21 @@ class SaleTransactionController extends Controller
         $user = Auth::user();
         $validated['branch_id'] = $user->branch_id;
 
-        $product = Product::where('product_name', $validated['product_name'])->first();
+        $product = Product::where('product_name', $validated['product_name'])
+        ->where('branch_id', $validated['branch_id'])
+        ->first();
 
-        if (!$product) {
-            $notification['alert-type'] = 'error';
-            $notification['message'] = 'Product not found';
-            return redirect()->route('minimarket.manage_transactions.create')->withInput()->with($notification);
-        }
+    if (!$product) {
+        $notification['alert-type'] = 'error';
+        $notification['message'] = 'Product not found';
+        return redirect()->route('minimarket.manage_transactions.create')->withInput()->with($notification);
+    }
 
-        if ($product->stock < $validated['quantity']) {
-            $notification['alert-type'] = 'error';
-            $notification['message'] = 'Insufficient product stock';
-            return redirect()->route('minimarket.manage_transactions.create')->withInput()->with($notification);
-        }
+    if ($product->stock < $validated['quantity']) {
+        $notification['alert-type'] = 'error';
+        $notification['message'] = 'Insufficient product stock';
+        return redirect()->route('minimarket.manage_transactions.create')->withInput()->with($notification);
+    }
 
         $validated['product_id'] = $product->id;
 
@@ -113,13 +116,18 @@ class SaleTransactionController extends Controller
 
     public function getProductPrice($productName)
 {
-    $product = Product::where('product_name', $productName)->first();
+    $branchId = request()->input('branch_id');
+
+    $product = Product::where('product_name', $productName)
+        ->where('branch_id', $branchId)
+        ->first();
 
     if ($product) {
-        return response()->json(['selling_price' => $product->selling_price]);
+        return response()->json(['selling_price' => $product->selling_price, 'branch_id' => $branchId]);
     } else {
-        return response()->json(['error' => 'Product not found'], 404);
+        return response()->json(['error' => 'Product not found for the given branch'], 404);
     }
 }
+
 
 }

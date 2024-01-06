@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('sale_transactions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('branch_id')->constrained('branches');
-            $table->string('code_sale')->unique();
+            $table->string('code_sale');
             $table->dateTime('transaction_date');
             $table->string('product_name');
             $table->integer('quantity');

@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\SaleTransaction;
 use App\Models\TargetSales;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TargetController extends Controller
 {
     public function index()
     {
-        $targets = TargetSales::all();
-        return view('minimarket.manager.target.index', compact('targets'));
+        $userBranchId = auth()->user()->branch_id;
+        $targetSales = TargetSales::where('branch_id', $userBranchId)->get();
+
+        return view('minimarket.manager.target.index', compact('targetSales'));
     }
 
     public function create()
@@ -19,72 +23,85 @@ class TargetController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $validatedData = $request->validate([
-            'bulan' => 'required|string|max:255',
-            'target_penjualan' => 'required|numeric|between:0,999999.99', 
-            'penjualan_aktual' => 'required|numeric|between:0,999999.99', 
-            'selisih' => 'required|numeric|between:-999999.99,999999.99', 
-        ]);
+{
+    $validated = $request->validate([
+        'branch_id' => 'required|exists:branches,id',
+        'bulan' => 'required|string',
+        'target_penjualan' => 'required|numeric|min:0',
+    ]);
 
-        $target = TargetSales::create([
-            'bulan' => $request->bulan,
-            'target_penjualan' => $request->target_penjualan,
-            'penjualan_aktual' => $request->penjualan_aktual,
-            'selisih' => $request->selisih,
-            'manager_name' => auth()->user()->name,
-            'branch_id' => auth()->user()->branch_id,
-            'position_id' => auth()->user()->position_id,
-        ]);
-        
-        if ($target) {
-            return redirect()->route('minimarket.manager.target')
-                ->with('success', 'New target created successfully.');
-        } else {
-            return redirect()->route('minimarket.manager.target.create')
-                ->with('error', 'Failed to create target. Please try again.');
-        }
+    $user = Auth::user();
+    $validated['branch_id'] = $user->branch_id;
+    $validated['user_id'] = $user->id;
+
+    $penjualanAktual = SaleTransaction::where('branch_id', $validated['branch_id'])
+        ->whereMonth('transaction_date', now()->month)
+        ->sum('total_price');
+
+    $validated['penjualan_aktual'] = $penjualanAktual;
+    $validated['selisih'] = $validated['target_penjualan'] - $penjualanAktual;
+
+    $targetSale = TargetSales::updateOrCreate(
+        ['branch_id' => $validated['branch_id'], 'bulan' => $validated['bulan']],
+        $validated
+    );
+
+    if ($targetSale) {
+        $notification['alert-type'] = 'success';
+        $notification['message'] = 'Sales Target added successfully';
+        return redirect()->route('minimarket.manager.target')->with($notification);
+    } else {
+        $notification['alert-type'] = 'error';
+        $notification['message'] = 'Failed to added Sales Target';
+        return redirect()->route('minimarket.manager.target.create')->withInput()->with($notification);
     }
+}
 
     public function edit($id)
     {
-        $target = TargetSales::findOrFail($id);
-
-        return view('minimarket.manager.target.edit', compact('target'));
+        $targetSales = TargetSales::findOrFail($id);
+        return view('minimarket.manager.target.edit', compact('targetSales'));
     }
 
     public function update(Request $request, $id)
     {
-        $validatedData = $request->validate([
-            'bulan' => 'required|string|max:255',
-            'target_penjualan' => 'required|numeric|between:0,999999.99', 
-            'penjualan_aktual' => 'required|numeric|between:0,999999.99', 
-            'selisih' => 'required|numeric|between:-999999.99,999999.99', 
+        $validated = $request->validate([
+            'bulan' => 'required|string',
+            'target_penjualan' => 'required|numeric|min:0',
+            'penjualan_aktual' => 'required|numeric|min:0',
         ]);
 
-        $target = TargetSales::findOrFail($id);
+        $validated['selisih'] = $validated['target_penjualan'] - $validated['penjualan_aktual'];
 
-        $target->update($validatedData);
+        $targetSales = TargetSales::findOrFail($id);
+        $targetSales->update($validated);
 
-        if ($target) {
-            return redirect()->route('minimarket.manager.target')
-                ->with('success', 'Target updated successfully.');
+        if ($targetSales) {
+            $notification['alert-type'] = 'success';
+            $notification['message'] = 'Sales Target updated successfully';
+            return redirect()->route('minimarket.manager.target')->with($notification);
         } else {
-            return redirect()->route('minimarket.manager.target.edit', $id)
-                ->with('error', 'Failed to update target. Please try again.');
+            $notification['alert-type'] = 'error';
+            $notification['message'] = 'Failed to updated Sales Target';
+            return redirect()->route('minimarket.manager.target.edit')->withInput()->with($notification);
         }
     }
 
     public function destroy($id)
     {
-        $target = TargetSales::findOrFail($id);
+        $targetSales = TargetSales::findOrFail($id);
+        $targetSales->delete();
 
-        if ($target->delete()) {
-            return redirect()->route('minimarket.manager.target')
-                ->with('success', 'Target deleted successfully.');
+        if ($targetSales) {
+            $notification['alert-type'] = 'success';
+            $notification['message'] = 'Sales Target deleted successfully';
+            return redirect()->route('minimarket.manager.target')->with($notification);
         } else {
-            return redirect()->route('minimarket.manager.target.index')
-                ->with('error', 'Failed to delete target. Please try again.');
+            $notification['alert-type'] = 'error';
+            $notification['message'] = 'Failed to deleted Sales Target';
+            return redirect()->route('minimarket.manager.target')->withInput()->with($notification);
         }
     }
+
+
 }

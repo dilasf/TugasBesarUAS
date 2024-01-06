@@ -2,6 +2,7 @@
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
+
     <form method="POST" action="{{ route('login') }}">
         @csrf
 
@@ -38,6 +39,21 @@
                     @endforeach
                 </x-select-input>
             </div>
+            {{-- <div class="block mt-4">
+                <x-input-label for="branch" :value="__('Select Branch')" />
+
+                @if($user && $user->position && $user->position->name === 'Owner')
+                    <p class="mt-1 block w-full text-gray-500">Owners do not choose a branch.</p>
+                @else
+                    <x-select-input id="branch" name="branch_id" class="mt-1 block w-full" required>
+                        <option value="" disabled selected>Select Branch</option>
+                        @foreach($branches as $cabang)
+                            <option value="{{ $cabang->id }}">{{ $cabang->name }}</option>
+                        @endforeach
+                    </x-select-input>
+                @endif
+            </div> --}}
+
 
         <!-- Password -->
         <div class="mt-4">

@@ -35,7 +35,7 @@ class PurchaseTransactionController extends Controller
 {
     $validated = $request->validate([
         'branch_id' => 'required|exists:branches,id',
-        'code_purchase' => 'required|unique:purchase_transactions,code_purchase',
+        'code_purchase' => 'required|unique:purchase_transactions,code_purchase,NULL,id,branch_id,' . $request->input('branch_id'),
         'transaction_date' => 'required|date',
         'code_product' => 'required|string',
         'product_name' => 'required|string',

@@ -9,7 +9,8 @@ class StockController extends Controller
 {
     public function index()
     {
-        $data['products'] = Product::all();
+        $userBranchId = auth()->user()->branch_id;
+        $data['products'] = Product::where('branch_id', $userBranchId)->with('typesofgoods', 'units')->get();
         return view('minimarket.supervisor.stock.index', $data);
     }
 }

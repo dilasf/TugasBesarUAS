@@ -9,7 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflowhidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <form method="post" action="{{ route('minimarket.manage_transactions.discount.update', $discount->id) }}" class="mt-6 space-y-6">
+                    <form method="post" action="{{ route('minimarket.manager.discount.update', $discount->id) }}" class="mt-6 space-y-6">
                         @csrf
                         @method('PATCH')
                         <div class="max-w-xl">
@@ -37,7 +37,7 @@
                         </div>
 
                         <x-primary-button value="true">Update Diskon</x-primary-button>
-                        <x-secondary-button tag="a" href="{{ route('minimarket.manage_transactions.discount') }}">Cancel</x-secondary-button>
+                        <x-secondary-button tag="a" href="{{ route('minimarket.manager.discount') }}">Cancel</x-secondary-button>
                     </form>
                 </div>
             </div>

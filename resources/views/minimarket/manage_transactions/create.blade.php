@@ -88,15 +88,15 @@
                                 <x-input-label for="payment" value="Metode Pembayaran" />
                                 <x-select-input id="payment" name="payment_id" class="mt-1 block w-full" required>
                                     @foreach($payments as $key => $value)
-                                    @if(old('payment_id') == $key)
-                                    <option value="{{ $key }}" selected>{{ $value }}</option>
-                                    @else
-                                    <option value="{{ $key }}">{{ $value }}</option>
-                                    @endif
+                                        @if(old('payment_id') == $key)
+                                            <option value="{{ $key }}" selected>{{ $value }}</option>
+                                        @else
+                                            <option value="{{ $key }}">{{ $value }}</option>
+                                        @endif
                                     @endforeach
                                 </x-select-input>
                                 <x-input-error class="mt-2" :messages="$errors->get('payment_id')" />
-                                </div>
+                            </div>
 
                                 <div class="mb-4 max-w-xl">
                                     <x-input-label for="total_payment" value="Uang yang Diterima" />
@@ -134,127 +134,133 @@
                     </script>
                      <!-- ... End Automatic Time ... -->
 
-        <!-- ... Transaction ... -->
-        <script>
-            //inisialisasi
-            var salePriceInput = document.getElementById('sale_price');
-            var quantityInput = document.getElementById('quantity');
-            var taxAmountInput = document.getElementById('tax_amount');
-            var discountNameInput = document.getElementById('discount_name');
-            var totalHargaInput = document.getElementById('total_price');
-            var totalHargaSetelahDiskonInput = document.getElementById('total_price_after_discount');
-            var totalPaymentInput = document.getElementById('total_payment');
-            var changeAmountInput = document.getElementById('change_amount');
-            var productNameInput = document.getElementById('product_name');
+                    <!-- ... Transaction ... -->
+                    <script>
+                        //inisialisasi
+                        var salePriceInput = document.getElementById('sale_price');
+                        var quantityInput = document.getElementById('quantity');
+                        var taxAmountInput = document.getElementById('tax_amount');
+                        var discountNameInput = document.getElementById('discount_name');
+                        var totalHargaInput = document.getElementById('total_price');
+                        var totalHargaSetelahDiskonInput = document.getElementById('total_price_after_discount');
+                        var totalPaymentInput = document.getElementById('total_payment');
+                        var changeAmountInput = document.getElementById('change_amount');
+                        var productNameInput = document.getElementById('product_name');
 
-            // Menghitung dan menampilkan total-total
-            salePriceInput.addEventListener('input', updateTotalHarga);
-            quantityInput.addEventListener('input', updateTotalHarga);
-            taxAmountInput.addEventListener('input', updateTotalHarga);
+                        // Menghitung dan menampilkan total-total
+                        salePriceInput.addEventListener('input', updateTotalHarga);
+                        quantityInput.addEventListener('input', updateTotalHarga);
+                        taxAmountInput.addEventListener('input', updateTotalHarga);
 
-            discountNameInput.addEventListener('input', function () {
-                updateTotalHargaSetelahDiskon();
-            });
+                        discountNameInput.addEventListener('input', function () {
+                            updateTotalHargaSetelahDiskon();
+                        });
 
-            totalPaymentInput.addEventListener('input', updateChangeAmount);
+                        totalPaymentInput.addEventListener('input', updateChangeAmount);
 
-            // pengecekan harga dan nama produk
-            function checkProduct() {
-                var productName = productNameInput.value.trim();
 
-                fetch('/get-product/' + productName)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.error) {
-                            console.error('Error:', data.error);
-                        } else {
-                            var selling_price = parseFloat(data.selling_price) || 0;
-                        salePriceInput.value = selling_price.toFixed(2);
-                        updateSalePriceLabel();
-                            updateTotalHarga();
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
-            }
+                        function checkProduct() {
+                            var productName = productNameInput.value.trim();
+                            var branchId = document.querySelector('input[name="branch_id"]').value;
 
-            function updateSalePriceLabel() {
-                var salePrice = parseFloat(salePriceInput.value) || 0;
-                var salePriceLabel = document.querySelector('label[for="sale_price"]');
-                salePriceLabel.textContent = 'Harga Jual: ' + salePrice.toFixed(2);
-            }
-            updateSalePriceLabel();
-
-            // Menghitung dan menampilkan Total Harga
-            function updateTotalHarga() {
-                var salePrice = parseFloat(salePriceInput.value) || 0;
-                var quantity = parseFloat(quantityInput.value) || 0;
-                var taxAmount = parseFloat(taxAmountInput.value) || 0;
-                var totalHarga = salePrice * quantity + taxAmount;
-                totalHargaInput.value = totalHarga.toFixed(2);
-                updateLabel('total_price', 'Total Harga: ' + totalHarga.toFixed(2));
-                updateTotalHargaSetelahDiskon();
-            }
-
-            // Menghitung dan menampilkan Total Harga Setelah Diskon saat input berubah
-            function updateTotalHargaSetelahDiskon() {
-                var totalHarga = parseFloat(totalHargaInput.value) || 0;
-                var discountName = discountNameInput.value.trim();
-
-                // Mendapatkan nilai diskon
-                fetch('/get-discount/' + discountName)
-                    .then(response => response.json())
-                    .then(data => {
-                        var diskonPercentage = data.discount_percent || 0;
-                        if (diskonPercentage > 1) {
-                            diskonPercentage = diskonPercentage / 100;
+                            fetch('/get-product/' + productName + '?branch_id=' + branchId)
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.error) {
+                                        console.error('Error:', data.error);
+                                    } else {
+                                        if (data.branch_id == branchId) {
+                                            var selling_price = parseFloat(data.selling_price) || 0;
+                                            salePriceInput.value = selling_price.toFixed(2);
+                                            updateSalePriceLabel();
+                                            updateTotalHarga();
+                                        } else {
+                                            console.error('Error: Product does not belong to the selected branch');
+                                        }
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                });
                         }
 
-                        // Cek syarat pembelian minimal 50000
-                        if (totalHarga > 49000) {
-                            var totalHargaSetelahDiskon = totalHarga - (totalHarga * diskonPercentage);
-                            totalHargaSetelahDiskon = Math.max(totalHargaSetelahDiskon, 0);
-                            totalHargaSetelahDiskonInput.value = totalHargaSetelahDiskon.toFixed(2);
-                            updateLabel('total_price_after_discount', 'Total Harga Setelah Diskon: ' + totalHargaSetelahDiskon.toFixed(2));
-                        } else {
-                            totalHargaSetelahDiskonInput.value = totalHarga.toFixed(2);
-                            updateLabel('total_price_after_discount', 'Total Harga Setelah Diskon: ' + totalHarga.toFixed(2));
-                        }
 
-                        updateChangeAmount();
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
-            }
+                                function updateSalePriceLabel() {
+                                    var salePrice = parseFloat(salePriceInput.value) || 0;
+                                    var salePriceLabel = document.querySelector('label[for="sale_price"]');
+                                    salePriceLabel.textContent = 'Harga Jual: ' + salePrice.toFixed(2);
+                                }
+                                updateSalePriceLabel();
 
-            // Menghitung dan menampilkan Uang Kembali saat input berubah
-            function updateChangeAmount() {
-                var totalHargaSetelahDiskon = parseFloat(totalHargaSetelahDiskonInput.value) || 0;
-                var totalPayment = parseFloat(totalPaymentInput.value) || 0;
-                var changeAmount = totalPayment - totalHargaSetelahDiskon;
-                changeAmountInput.value = changeAmount.toFixed(2);
-                updateLabel('change_amount', 'Uang Kembali: ' + changeAmount.toFixed(2));
-            }
+                                // Menghitung dan menampilkan Total Harga
+                                function updateTotalHarga() {
+                                    var salePrice = parseFloat(salePriceInput.value) || 0;
+                                    var quantity = parseFloat(quantityInput.value) || 0;
+                                    var taxAmount = parseFloat(taxAmountInput.value) || 0;
+                                    var totalHarga = salePrice * quantity + taxAmount;
+                                    totalHargaInput.value = totalHarga.toFixed(2);
+                                    updateLabel('total_price', 'Total Harga: ' + totalHarga.toFixed(2));
+                                    updateTotalHargaSetelahDiskon();
+                                }
 
-            function updateLabel(labelId, labelText) {
-                var label = document.querySelector('label[for="' + labelId + '"]');
-                label.textContent = labelText;
-            }
+                                // Menghitung dan menampilkan Total Harga Setelah Diskon saat input berubah
+                                function updateTotalHargaSetelahDiskon() {
+                                    var totalHarga = parseFloat(totalHargaInput.value) || 0;
+                                    var discountName = discountNameInput.value.trim();
 
-            // UpdateTotalHarga
-            document.addEventListener('DOMContentLoaded', function () {
-                updateTotalHarga();
-            });
+                                    // Mendapatkan nilai diskon
+                                    fetch('/get-discount/' + discountName)
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            var diskonPercentage = data.discount_percent || 0;
+                                            if (diskonPercentage > 1) {
+                                                diskonPercentage = diskonPercentage / 100;
+                                            }
 
-            // pengecekan nama dan harga produk saat nama produk berubah
-            productNameInput.addEventListener('change', function () {
-                checkProduct();
-            });
+                                            // Cek syarat pembelian minimal 50000
+                                            if (totalHarga > 49000) {
+                                                var totalHargaSetelahDiskon = totalHarga - (totalHarga * diskonPercentage);
+                                                totalHargaSetelahDiskon = Math.max(totalHargaSetelahDiskon, 0);
+                                                totalHargaSetelahDiskonInput.value = totalHargaSetelahDiskon.toFixed(2);
+                                                updateLabel('total_price_after_discount', 'Total Harga Setelah Diskon: ' + totalHargaSetelahDiskon.toFixed(2));
+                                            } else {
+                                                totalHargaSetelahDiskonInput.value = totalHarga.toFixed(2);
+                                                updateLabel('total_price_after_discount', 'Total Harga Setelah Diskon: ' + totalHarga.toFixed(2));
+                                            }
 
-        </script>
-        <!-- ... End Transaction ... -->
+                                            updateChangeAmount();
+                                        })
+                                        .catch(error => {
+                                            console.error('Error:', error);
+                                        });
+                                }
+
+                                // Menghitung dan menampilkan Uang Kembali saat input berubah
+                                function updateChangeAmount() {
+                                    var totalHargaSetelahDiskon = parseFloat(totalHargaSetelahDiskonInput.value) || 0;
+                                    var totalPayment = parseFloat(totalPaymentInput.value) || 0;
+                                    var changeAmount = totalPayment - totalHargaSetelahDiskon;
+                                    changeAmountInput.value = changeAmount.toFixed(2);
+                                    updateLabel('change_amount', 'Uang Kembali: ' + changeAmount.toFixed(2));
+                                }
+
+                                function updateLabel(labelId, labelText) {
+                                    var label = document.querySelector('label[for="' + labelId + '"]');
+                                    label.textContent = labelText;
+                                }
+
+                                // UpdateTotalHarga
+                                document.addEventListener('DOMContentLoaded', function () {
+                                    updateTotalHarga();
+                                });
+
+                                // pengecekan nama dan harga produk saat nama produk berubah
+                                productNameInput.addEventListener('change', function () {
+                                    checkProduct();
+                                });
+
+                            </script>
+                            <!-- ... End Transaction ... -->
 
                     </form>
 

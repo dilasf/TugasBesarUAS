@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
@@ -19,17 +20,33 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    public function positions(): BelongsTo
+   // User.php
+
+   public function positions()
+   {
+       return $this->belongsTo(Position::class, 'position_id', 'id');
+   }
+
+
+    public function branches(): BelongsTo
     {
-        return $this->belongsTo(Position::class, 'position_id', 'id');
+        return $this->belongsTo(Branch::class, 'branch_id', 'id');
     }
+
+    public function targetSales()
+    {
+        return $this->hasMany(TargetSales::class, 'user_id');
+    }
+
 
     protected $fillable = [
         'name',
         'email',
         'password',
-        // 'position',
+        'branch_id',
         'position_id',
+        'last_login_at',
+        'feedback',
     ];
 
     /**

@@ -10,12 +10,12 @@ class DiscountController extends Controller
     public function index()
     {
         $data['discounts'] = Discount::all();
-        return view('minimarket.manage_transactions.discount.index', $data);
+        return view('minimarket.manager.discount.index', $data);
     }
 
     public function create()
     {
-        return view('minimarket.manage_transactions.discount.create');
+        return view('minimarket.manager.discount.create');
     }
 
     public function store(Request $request)
@@ -30,11 +30,13 @@ class DiscountController extends Controller
         $discount = Discount::create($validatedData);
 
         if ($discount) {
-            return redirect()->route('minimarket.manage_transactions.discount')
-                ->with('success', 'Discount created successfully.');
+            $notification['alert-type'] = 'success';
+            $notification['message'] = 'Discount created successfully';
+            return redirect()->route('minimarket.manager.discount')->with($notification);
         } else {
-            return redirect()->route('minimarket.manage_transactions.discount.create')
-                ->with('error', 'Failed to create discount. Please try again.');
+            $notification['alert-type'] = 'error';
+            $notification['message'] = 'Failed to create discount';
+            return redirect()->route('minimarket.manager.discount.create')->withInput()->with($notification);
         }
     }
 
@@ -42,7 +44,7 @@ class DiscountController extends Controller
     {
         $discount = Discount::findOrFail($id);
 
-        return view('minimarket.manage_transactions.discount.edit', compact('discount'));
+        return view('minimarket.manager.discount.edit', compact('discount'));
     }
 
     public function update(Request $request, $id)
@@ -59,11 +61,13 @@ class DiscountController extends Controller
         $discount->update($validatedData);
 
         if ($discount) {
-            return redirect()->route('minimarket.manage_transactions.discount')
-                ->with('success', 'Discount updated successfully.');
+            $notification['alert-type'] = 'success';
+            $notification['message'] = 'Discount updated successfully';
+            return redirect()->route('minimarket.manager.discount')->with($notification);
         } else {
-            return redirect()->route('minimarket.manage_transactions.discount.edit', $id)
-                ->with('error', 'Failed to update discount. Please try again.');
+            $notification['alert-type'] = 'error';
+            $notification['message'] = 'Failed to update discount';
+            return redirect()->route('minimarket.manager.discount.edit')->withInput()->with($notification);
         }
     }
 
@@ -74,11 +78,13 @@ class DiscountController extends Controller
         $discount = Discount::findOrFail($id);
 
         if ($discount->delete()) {
-            return redirect()->route('minimarket.manage_transactions.discount')
-                ->with('success', 'Discount deleted successfully.');
+            $notification['alert-type'] = 'success';
+            $notification['message'] = 'Discount deleted successfully';
+            return redirect()->route('minimarket.manager.discount')->with($notification);
         } else {
-            return redirect()->route('minimarket.manage_transactions.discount.index')
-                ->with('error', 'Failed to delete discount. Please try again.');
+            $notification['alert-type'] = 'error';
+            $notification['message'] = 'Failed to delete discount';
+            return redirect()->route('minimarket.manager.discount')->withInput()->with($notification);
         }
     }
 
@@ -95,6 +101,12 @@ class DiscountController extends Controller
                 'discount_percent' => 0,
             ]);
         }
+    }
+
+    public function display()
+    {
+        $data['discounts'] = Discount::all();
+        return view('minimarket.manage_transactions.discount.index', $data);
     }
 
     }
