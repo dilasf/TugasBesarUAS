@@ -94,7 +94,7 @@ Route::middleware(['role:Cashier'])->group(function () {
     Route::get('/minimarket/manage_transactions/{id}/edit', [SaleTransactionController::class, 'edit'])->name('minimarket.manage_transactions.edit');
     Route::match(['put', 'patch'],'/minimarket/manage_transactions/{id}', [SaleTransactionController::class, 'update'])->name('minimarket.manage_transactions.update');
     Route::delete('/minimarket/manage_transactions/{id}', [SaleTransactionController::class, 'destroy'])->name('minimarket.manage_transactions.destroy');
-    Route::get('/get-product/{productName}', [SaleTransactionController::class, 'getProductPrice']);
+    Route::get('/get-brand-price/{brand}', [SaleTransactionController::class, 'getBrandPrice']);
 });
 
 Route::middleware(['role:Cashier'])->group(function () {

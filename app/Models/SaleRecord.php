@@ -18,7 +18,7 @@ class SaleRecord extends Model
         'branch_id',
         'code_sale',
         'transaction_date',
-        'product_name',
+        'brand',
         'quantity',
         'sale_price',
         'discount_name',

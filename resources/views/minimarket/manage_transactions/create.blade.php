@@ -43,14 +43,14 @@
                             </div>
 
                             <div class="mb-4 max-w-xl">
-                                <x-input-label for="product_name" value="Nama Produk" />
-                                <x-text-input id="product_name" type="text" name="product_name" class="mt-1 block w-full" required />
-                                <x-input-error class="mt-2" :messages="$errors->get('product_name')" />
+                                <x-input-label for="brand" value="Nama Produk" />
+                                <x-text-input id="brand" type="text" name="brand" class="mt-1 block w-full" required />
+                                <x-input-error class="mt-2" :messages="$errors->get('brand')" />
                             </div>
 
                             <div class="mb-4 max-w-xl">
-                                <x-input-label for="sale_price" value="Harga Jual" />
-                                    <x-text-input id="sale_price" type="number" name="sale_price" class="mt-1 block w-full" readonly/>
+                                <x-input-label for="sale_price" value="Harga Jual" id="labelSalePrice" />
+                                <x-text-input id="sale_price" type="number" name="sale_price" class="mt-1 block w-full" readonly />
                                 <x-input-error class="mt-2" :messages="$errors->get('sale_price')" />
                             </div>
 
@@ -72,11 +72,22 @@
                                 <x-input-error class="mt-2" :messages="$errors->get('total_price')" />
                             </div>
 
-                            <div class="mb-4 max-w-xl">
+                            {{-- <div class="mb-4 max-w-xl">
                                 <x-input-label for="discount_name" value="Nama Diskon" />
                                 <x-text-input id="discount_name" type="text" name="discount_name" class="mt-1 block w-full" />
                                 <x-input-error class="mt-2" :messages="$errors->get('discount_name')" />
+                            </div> --}}
+
+                            <div class="mb-4 max-w-xl">
+                                <x-input-label for="discount_id" value="Diskon" />
+                                <x-select-input id="discount_id" name="discount_id" class="mt-1 block w-full" required>
+                                    <option value="" selected>Tidak ada diskon</option>
+                                    @foreach($discounts as $id => $discount)
+                                        <option value="{{ $id }}">{{ $discount['discount_name'] }} - {{ $discount['discount_percent'] }}%</option>
+                                    @endforeach
+                                </x-select-input>
                             </div>
+
 
                             <div class="mb-4 max-w-xl">
                                 <x-input-label for="total_price_after_discount" value="Total Harga Setelah Diskon" />
@@ -136,131 +147,162 @@
 
                     <!-- ... Transaction ... -->
                     <script>
-                        //inisialisasi
-                        var salePriceInput = document.getElementById('sale_price');
-                        var quantityInput = document.getElementById('quantity');
-                        var taxAmountInput = document.getElementById('tax_amount');
-                        var discountNameInput = document.getElementById('discount_name');
-                        var totalHargaInput = document.getElementById('total_price');
-                        var totalHargaSetelahDiskonInput = document.getElementById('total_price_after_discount');
-                        var totalPaymentInput = document.getElementById('total_payment');
-                        var changeAmountInput = document.getElementById('change_amount');
-                        var productNameInput = document.getElementById('product_name');
-
-                        // Menghitung dan menampilkan total-total
-                        salePriceInput.addEventListener('input', updateTotalHarga);
-                        quantityInput.addEventListener('input', updateTotalHarga);
-                        taxAmountInput.addEventListener('input', updateTotalHarga);
-
-                        discountNameInput.addEventListener('input', function () {
-                            updateTotalHargaSetelahDiskon();
-                        });
-
-                        totalPaymentInput.addEventListener('input', updateChangeAmount);
+                        document.addEventListener("DOMContentLoaded", function () {
+                            var brandInput = document.getElementById('brand');
+                            var salePriceInput = document.getElementById('sale_price');
+                            var quantityInput = document.getElementById('quantity');
+                            var taxAmountInput = document.getElementById('tax_amount');
+                            var totalPriceInput = document.getElementById('total_price');
+                            var totalAfterDiscountInput = document.getElementById('total_price_after_discount');
+                            var labelTotalPrice = document.querySelector('[for="total_price"]');
+                            var labelSalePrice = document.querySelector('[for="sale_price"]');
+                            var discountNameInput = document.getElementById('discount_id');
+                            var receivedAmountInput = document.getElementById('total_payment');
+                            var changeAmountInput = document.getElementById('change_amount');
 
 
-                        function checkProduct() {
-                            var productName = productNameInput.value.trim();
-                            var branchId = document.querySelector('input[name="branch_id"]').value;
+                            if (!brandInput || !salePriceInput || !quantityInput || !taxAmountInput || !totalPriceInput || !totalAfterDiscountInput || !labelTotalPrice || !labelSalePrice || !discountNameInput || !totalAfterDiscountInput || !receivedAmountInput || !changeAmountInput) {
+                                console.error('Elemen tidak ditemukan. Pastikan semua elemen yang diperlukan ada dalam dokumen HTML.');
+                                return;
+                            }
 
-                            fetch('/get-product/' + productName + '?branch_id=' + branchId)
-                                .then(response => response.json())
-                                .then(data => {
-                                    if (data.error) {
-                                        console.error('Error:', data.error);
-                                    } else {
-                                        if (data.branch_id == branchId) {
-                                            var selling_price = parseFloat(data.selling_price) || 0;
-                                            salePriceInput.value = selling_price.toFixed(2);
-                                            updateSalePriceLabel();
-                                            updateTotalHarga();
-                                        } else {
-                                            console.error('Error: Product does not belong to the selected branch');
+                            function calculateTotalPrice() {
+                                var salePrice = parseFloat(salePriceInput.value) || 0;
+                                var quantity = parseInt(quantityInput.value) || 0;
+                                var taxAmount = parseFloat(taxAmountInput.value) || 0;
+
+                                var totalPrice = salePrice * quantity + taxAmount;
+                                totalPriceInput.value = totalPrice.toFixed(2);
+
+                                if (labelTotalPrice) {
+                                    labelTotalPrice.textContent = 'Total Harga ' + totalPrice.toFixed(1);
+                                } else {
+                                    console.error('Elemen label untuk total harga tidak ditemukan.');
+                                }
+
+                                // Trigger discount calculation after setting the initial total price
+                                calculateTotalPriceAfterDiscount();
+                            }
+
+                            function calculateTotalPriceAfterBrandDiscount() {
+                                var brandName = brandInput.value;
+                                var apiUrl = '/get-brand-price/' + brandName;
+
+                                fetch(apiUrl)
+                                    .then(response => {
+                                        if (!response.ok) {
+                                            throw new Error('Network response was not ok');
                                         }
-                                    }
-                                })
-                                .catch(error => {
-                                    console.error('Error:', error);
-                                });
-                        }
+                                        return response.json();
+                                    })
+                                    .then(data => {
+                                        console.log('Received data:', data);
+                                        if (data && typeof data.selling_price === 'string') {
+                                            var numericSellingPrice = parseFloat(data.selling_price);
 
-
-                                function updateSalePriceLabel() {
-                                    var salePrice = parseFloat(salePriceInput.value) || 0;
-                                    var salePriceLabel = document.querySelector('label[for="sale_price"]');
-                                    salePriceLabel.textContent = 'Harga Jual: ' + salePrice.toFixed(2);
-                                }
-                                updateSalePriceLabel();
-
-                                // Menghitung dan menampilkan Total Harga
-                                function updateTotalHarga() {
-                                    var salePrice = parseFloat(salePriceInput.value) || 0;
-                                    var quantity = parseFloat(quantityInput.value) || 0;
-                                    var taxAmount = parseFloat(taxAmountInput.value) || 0;
-                                    var totalHarga = salePrice * quantity + taxAmount;
-                                    totalHargaInput.value = totalHarga.toFixed(2);
-                                    updateLabel('total_price', 'Total Harga: ' + totalHarga.toFixed(2));
-                                    updateTotalHargaSetelahDiskon();
-                                }
-
-                                // Menghitung dan menampilkan Total Harga Setelah Diskon saat input berubah
-                                function updateTotalHargaSetelahDiskon() {
-                                    var totalHarga = parseFloat(totalHargaInput.value) || 0;
-                                    var discountName = discountNameInput.value.trim();
-
-                                    // Mendapatkan nilai diskon
-                                    fetch('/get-discount/' + discountName)
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            var diskonPercentage = data.discount_percent || 0;
-                                            if (diskonPercentage > 1) {
-                                                diskonPercentage = diskonPercentage / 100;
-                                            }
-
-                                            // Cek syarat pembelian minimal 50000
-                                            if (totalHarga > 49000) {
-                                                var totalHargaSetelahDiskon = totalHarga - (totalHarga * diskonPercentage);
-                                                totalHargaSetelahDiskon = Math.max(totalHargaSetelahDiskon, 0);
-                                                totalHargaSetelahDiskonInput.value = totalHargaSetelahDiskon.toFixed(2);
-                                                updateLabel('total_price_after_discount', 'Total Harga Setelah Diskon: ' + totalHargaSetelahDiskon.toFixed(2));
+                                            if (!isNaN(numericSellingPrice)) {
+                                                salePriceInput.value = numericSellingPrice;
+                                                labelSalePrice.textContent = 'Harga Jual ' + numericSellingPrice.toFixed(2); // Updated to display '.00'
+                                                calculateTotalPrice();
+                                                // Calculate after setting sale price
+                                                calculateTotalPriceAfterDiscount();
                                             } else {
-                                                totalHargaSetelahDiskonInput.value = totalHarga.toFixed(2);
-                                                updateLabel('total_price_after_discount', 'Total Harga Setelah Diskon: ' + totalHarga.toFixed(2));
+                                                console.error('Gagal mengonversi selling_price menjadi angka:', data.selling_price);
                                             }
+                                        } else {
+                                            console.error('Data tidak sesuai dengan format yang diharapkan:', data);
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error('Terjadi kesalahan saat mengambil harga dari server:', error);
+                                        // Handle the error gracefully here
+                                    });
+                            }
 
-                                            updateChangeAmount();
-                                        })
-                                        .catch(error => {
-                                            console.error('Error:', error);
-                                        });
+                            function calculateTotalPriceAfterDiscount() {
+                                var discountOption = discountNameInput.options[discountNameInput.selectedIndex];
+
+                                if (discountOption) {
+                                    if (discountOption.value === "") {
+                                        // If "Tidak ada diskon" is selected, set discount to 0%
+                                        var discountPercent = 0;
+                                    } else {
+                                        // Extracting discount percent from the selected option
+                                        var discountInfo = discountOption.text.split(' - ');
+                                        var discountPercent = parseFloat(discountInfo[1].replace('%', '')) || 0;
+                                    }
+
+                                    var salePrice = parseFloat(salePriceInput.value) || 0;
+                                    var quantity = parseInt(quantityInput.value) || 0;
+                                    var taxAmount = parseFloat(taxAmountInput.value) || 0;
+
+                                    // Calculate total price
+                                    var totalPrice = salePrice * quantity + taxAmount;
+
+                                    // Check if total price is above 24000 for applying discount
+                                    if (totalPrice > 24000) {
+                                        var discountAmount = (discountPercent / 100) * totalPrice;
+                                        var totalAfterDiscount = totalPrice - discountAmount;
+
+                                        // Display the result in your input field
+                                        totalAfterDiscountInput.value = totalAfterDiscount.toFixed(2);
+                                    } else {
+                                        // If total price is 24000 or below, no discount is applied
+                                        totalAfterDiscountInput.value = totalPrice.toFixed(2);
+                                    }
+
+                                    // Update the label for consistency
+                                    var labelTotalAfterDiscount = document.querySelector('[for="total_price_after_discount"]');
+                                    if (labelTotalAfterDiscount) {
+                                        labelTotalAfterDiscount.textContent = 'Total Harga Setelah Diskon ' + totalAfterDiscountInput.value;
+                                    } else {
+                                        console.error('Elemen label untuk total harga setelah diskon tidak ditemukan.');
+                                    }
+                                } else {
+                                    console.error('Discount option is not selected.');
                                 }
+                                calculateChangeAmount();
+                            }
 
-                                // Menghitung dan menampilkan Uang Kembali saat input berubah
-                                function updateChangeAmount() {
-                                    var totalHargaSetelahDiskon = parseFloat(totalHargaSetelahDiskonInput.value) || 0;
-                                    var totalPayment = parseFloat(totalPaymentInput.value) || 0;
-                                    var changeAmount = totalPayment - totalHargaSetelahDiskon;
-                                    changeAmountInput.value = changeAmount.toFixed(2);
-                                    updateLabel('change_amount', 'Uang Kembali: ' + changeAmount.toFixed(2));
+                            function calculateChangeAmount() {
+                                console.log('calculateChangeAmount');
+                                var totalAfterDiscount = parseFloat(totalAfterDiscountInput.value) || 0;
+                                var receivedAmount = parseFloat(receivedAmountInput.value) || 0;
+                                var changeAmount = receivedAmount - totalAfterDiscount;
+
+                                changeAmountInput.value = changeAmount.toFixed(2);
+
+                                var labelChangeAmount = document.querySelector('[for="change_amount"]');
+                                if (labelChangeAmount) {
+                                    labelChangeAmount.textContent = 'Uang Kembali: ' + changeAmountInput.value;
+                                } else {
+                                    console.error('Elemen label untuk uang kembali tidak ditemukan.');
                                 }
+                                console.log('Change Amount:', changeAmount);
+}
 
-                                function updateLabel(labelId, labelText) {
-                                    var label = document.querySelector('label[for="' + labelId + '"]');
-                                    label.textContent = labelText;
-                                }
+                            quantityInput.addEventListener('input', calculateTotalPrice);
+                            taxAmountInput.addEventListener('input', calculateTotalPrice);
+                            receivedAmountInput.addEventListener('input', calculateChangeAmount);
 
-                                // UpdateTotalHarga
-                                document.addEventListener('DOMContentLoaded', function () {
-                                    updateTotalHarga();
-                                });
+                            // Call calculateTotalPriceAfterBrandDiscount on page load
+                            calculateTotalPriceAfterBrandDiscount();
 
-                                // pengecekan nama dan harga produk saat nama produk berubah
-                                productNameInput.addEventListener('change', function () {
-                                    checkProduct();
-                                });
+                            brandInput.addEventListener('change', function () {
+                                calculateTotalPriceAfterBrandDiscount();
+                                calculateTotalPriceAfterDiscount();
+                                calculateChangeAmount();
+                            });
 
-                            </script>
-                            <!-- ... End Transaction ... -->
+                            // Trigger calculation when the discount dropdown changes
+                            discountNameInput.addEventListener('change', function () {
+                                calculateTotalPriceAfterDiscount();
+                            });
+                        });
+                    </script>
+
+
+                     <!-- ... End Transaction ... -->
 
                     </form>
 

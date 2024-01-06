@@ -27,7 +27,7 @@ class SaleTransaction extends Model
 
     public function discount(): BelongsTo
     {
-        return $this->belongsTo(Discount::class);
+        return $this->belongsTo(Discount::class, 'discount_id', 'id');
     }
 
     public function payment(): BelongsTo
@@ -39,7 +39,7 @@ class SaleTransaction extends Model
         'branch_id',
         'code_sale',
         'transaction_date',
-        'product_name',
+        'brand',
         'sale_price',
         'quantity',
         'tax_amount',

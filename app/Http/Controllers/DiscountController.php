@@ -89,19 +89,20 @@ class DiscountController extends Controller
     }
 
     public function getDiscount($discountName)
-    {
-        $discount = Discount::where('discount_name', $discountName)->first();
+{
+    $discount = Discount::where('discount_name', $discountName)->first();
 
-        if ($discount) {
-            return response()->json([
-                'discount_percent' => $discount->discount_percent,
-            ]);
-        } else {
-            return response()->json([
-                'discount_percent' => 0,
-            ]);
-        }
+    if ($discount) {
+        return response()->json([
+            'discount_percent' => $discount->discount_percent,
+        ]);
+    } else {
+        return response()->json([
+            'discount_percent' => 0,
+        ]);
     }
+}
+
 
     public function display()
     {
